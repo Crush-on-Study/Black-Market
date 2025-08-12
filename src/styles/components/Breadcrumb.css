@@ -1,0 +1,186 @@
+/* 브레드크럼 네비게이션 */
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin: 30px 0;
+  padding: 25px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.breadcrumb-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.breadcrumb-step {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.breadcrumb-step.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+  border-color: rgba(0, 212, 255, 0.8);
+  color: #ffffff;
+  box-shadow: 
+    0 0 25px rgba(0, 212, 255, 0.4),
+    0 0 50px rgba(0, 212, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.breadcrumb-step.completed {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+  border-color: rgba(0, 255, 136, 0.8);
+  color: #00ff88;
+  box-shadow: 
+    0 0 25px rgba(0, 255, 136, 0.4),
+    0 0 50px rgba(0, 255, 136, 0.2);
+}
+
+.breadcrumb-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  max-width: 120px;
+}
+
+.breadcrumb-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.breadcrumb-description {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.breadcrumb-arrow {
+  position: absolute;
+  right: -45px;
+  top: 25px;
+  color: rgba(0, 212, 255, 0.4);
+  font-size: 24px;
+  font-weight: bold;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+.breadcrumb-arrow.active {
+  color: rgba(0, 212, 255, 0.8);
+  text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+  transform: scale(1.2);
+}
+
+/* 연결선 효과 */
+.breadcrumb-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: 25px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.3), transparent);
+  z-index: 1;
+}
+
+.breadcrumb-item:not(:last-child).active::after {
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.6), transparent);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* 호버 효과 */
+.breadcrumb-item:hover .breadcrumb-step {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0, 212, 255, 0.3);
+}
+
+.breadcrumb-item:hover .breadcrumb-title {
+  color: rgba(0, 212, 255, 0.9);
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .breadcrumb-nav {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .breadcrumb-item {
+    flex-direction: row;
+    gap: 15px;
+    text-align: left;
+    max-width: none;
+  }
+  
+  .breadcrumb-info {
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .breadcrumb-arrow {
+    position: static;
+    transform: rotate(90deg);
+    margin-top: 10px;
+  }
+  
+  .breadcrumb-item:not(:last-child)::after {
+    display: none;
+  }
+  
+  .breadcrumb-title {
+    font-size: 16px;
+  }
+  
+  .breadcrumb-description {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb-nav {
+    padding: 15px;
+  }
+  
+  .breadcrumb-step {
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+  }
+  
+  .breadcrumb-title {
+    font-size: 14px;
+  }
+  
+  .breadcrumb-description {
+    font-size: 11px;
+  }
+}

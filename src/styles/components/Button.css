@@ -1,0 +1,173 @@
+.star-border-container {
+  display: inline-block;
+  position: relative;
+  border-radius: 20px;
+  overflow: visible;
+  background: transparent;
+}
+
+.border-gradient-bottom {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  opacity: 1;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, transparent, #ff00ff, transparent);
+  border-radius: 1px;
+  animation: star-movement-bottom 3s linear infinite;
+  z-index: 0;
+}
+
+.border-gradient-top {
+  position: absolute;
+  opacity: 1;
+  width: 100%;
+  height: 2px;
+  top: 0;
+  left: 0;
+  background: linear-gradient(90deg, transparent, #ff00ff, transparent);
+  border-radius: 1px;
+  animation: star-movement-top 3s linear infinite;
+  z-index: 0;
+}
+
+.inner-content {
+  position: relative;
+  border: 1px solid #333;
+  background: transparent !important;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 16px;
+  z-index: 1;
+  box-shadow: 
+    0 0 8px rgba(255, 0, 255, 0.3);
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Button variant 스타일 */
+.btn--primary .inner-content {
+  background: transparent !important;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+.btn--primary .border-gradient-top,
+.btn--primary .border-gradient-bottom {
+  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+}
+
+.btn--secondary .inner-content {
+  background: transparent !important;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: #00ff88;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+}
+
+.btn--secondary .border-gradient-top,
+.btn--secondary .border-gradient-bottom {
+  background: linear-gradient(90deg, transparent, #00ff88, transparent);
+}
+
+.btn--outline .inner-content {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.btn--outline .border-gradient-top,
+.btn--outline .border-gradient-bottom {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+/* Button size 스타일 */
+.btn--small .inner-content {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.btn--medium .inner-content {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 16px;
+}
+
+.btn--large .inner-content {
+  padding: 14px 28px;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+/* Full width */
+.btn--full-width .inner-content {
+  width: 100%;
+}
+
+/* Disabled state */
+.star-border-container:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.star-border-container:disabled .inner-content {
+  background: rgba(128, 128, 128, 0.3);
+  border-color: rgba(128, 128, 128, 0.5);
+}
+
+/* Loading state */
+.btn--loading .inner-content {
+  position: relative;
+  color: transparent;
+}
+
+.btn--loading .inner-content::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

@@ -1,0 +1,262 @@
+.searchable-select {
+  position: relative;
+  width: 100%;
+  font-family: 'Arial', sans-serif;
+}
+
+/* 선택된 값 표시 영역 */
+.select-display {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+}
+
+.select-display:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  background: rgba(0, 212, 255, 0.05);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.select-display.open {
+  border-color: rgba(0, 212, 255, 0.8);
+  background: rgba(0, 212, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+/* 선택된 옵션 표시 */
+.selected-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.option-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-name {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.option-description {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.option-domain {
+  color: rgba(0, 212, 255, 0.8);
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+}
+
+/* 플레이스홀더 */
+.placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}
+
+/* 드롭다운 화살표 */
+.dropdown-arrow {
+  color: rgba(0, 212, 255, 0.6);
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.select-display.open .dropdown-arrow {
+  transform: rotate(180deg);
+  color: rgba(0, 212, 255, 0.8);
+}
+
+/* 드롭다운 메뉴 */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  max-height: 300px;
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* 검색 컨테이너 */
+.search-container {
+  position: relative;
+  padding: 15px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 6px;
+  padding: 12px 40px 12px 15px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 검색 아이콘 */
+.search-icon {
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(0, 212, 255, 0.6);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* 옵션 리스트 */
+.options-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* 옵션 아이템 */
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.option-item:hover {
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.option-item.highlighted {
+  background: rgba(0, 212, 255, 0.15);
+  border-left: 3px solid rgba(0, 212, 255, 0.8);
+}
+
+.option-item:last-child {
+  border-bottom: none;
+}
+
+/* 검색 결과 없음 */
+.no-results {
+  padding: 30px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.no-results p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* 스크롤바 스타일링 */
+.options-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.options-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.options-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+.options-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.5);
+}
+
+/* 애니메이션 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .select-display {
+    padding: 12px;
+    min-height: 50px;
+  }
+  
+  .option-icon {
+    font-size: 20px;
+  }
+  
+  .option-name {
+    font-size: 14px;
+  }
+  
+  .option-description {
+    font-size: 12px;
+  }
+  
+  .search-container {
+    padding: 12px;
+  }
+  
+  .search-input {
+    padding: 10px 35px 10px 12px;
+    font-size: 14px;
+  }
+  
+  .option-item {
+    padding: 12px;
+  }
+}
+
+/* 포커스 스타일 */
+.select-display:focus {
+  outline: none;
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+/* 접근성 */
+.searchable-select[aria-expanded="true"] .select-display {
+  border-color: rgba(0, 212, 255, 0.8);
+}
