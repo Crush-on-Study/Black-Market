@@ -1,6 +1,6 @@
 # ⚡ Black Market - 식권포인트 P2P 거래 플랫폼
 
-**Version**: 1.0.0  
+**Version**: 1.0.1  
 **Status**: Frontend 초기 작업 완료 (백엔드 연동 필요)  
 **Last Updated**: 2025년 8월 13일
 
@@ -224,134 +224,12 @@ BlackMarket/
 - **컴포넌트 분리**: 재사용 가능한 UI 컴포넌트
 - **타입 안전성**: 명확한 인터페이스와 액션 정의
 
-## 🔄 백엔드 개발 가이드
+## 🔄 개발 가이드
 
 ### **현재 상태**
 프론트엔드는 완성되었지만, 모든 데이터는 Mock 데이터로 구성되어 있습니다.  
 백엔드 개발자와 협업하여 실제 API 연동이 필요합니다.
 
-### **필요한 백엔드 API**
-
-#### 1. **인증 시스템**
-```http
-POST /api/auth/login
-POST /api/auth/register
-POST /api/auth/verify-email
-POST /api/auth/forgot-password
-POST /api/auth/reset-password
-```
-
-#### 2. **사용자 관리**
-```http
-GET /api/users/profile
-PUT /api/users/profile
-POST /api/users/avatar
-GET /api/users/{id}/reputation
-```
-
-#### 3. **거래 관리**
-```http
-GET /api/deals
-POST /api/deals
-GET /api/deals/{id}
-PUT /api/deals/{id}
-DELETE /api/deals/{id}
-GET /api/deals/search
-```
-
-#### 4. **쪽지 시스템**
-```http
-POST /api/messages
-GET /api/messages/inbox
-GET /api/messages/sent
-PUT /api/messages/{id}/read
-DELETE /api/messages/{id}
-```
-
-#### 5. **통계 및 차트**
-```http
-GET /api/stats/point-price
-GET /api/stats/trading-volume
-GET /api/stats/user-activity
-```
-
-### **데이터베이스 스키마 (제안)**
-
-#### **Users 테이블**
-```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  nickname VARCHAR(100) NOT NULL,
-  company_id UUID REFERENCES companies(id),
-  avatar_url VARCHAR(500),
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-#### **Companies 테이블**
-```sql
-CREATE TABLE companies (
-  id UUID PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  domain VARCHAR(100) UNIQUE NOT NULL,
-  is_active BOOLEAN DEFAULT true
-);
-```
-
-#### **Deals 테이블**
-```sql
-CREATE TABLE deals (
-  id UUID PRIMARY KEY,
-  user_id UUID REFERENCES users(id),
-  title VARCHAR(200) NOT NULL,
-  description TEXT,
-  points INTEGER NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
-  type ENUM('sell', 'buy') NOT NULL,
-  status ENUM('selling', 'completed', 'cancelled') DEFAULT 'selling',
-  views INTEGER DEFAULT 0,
-  expires_at TIMESTAMP NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-#### **Messages 테이블**
-```sql
-CREATE TABLE messages (
-  id UUID PRIMARY KEY,
-  sender_id UUID REFERENCES users(id),
-  recipient_id UUID REFERENCES users(id),
-  deal_id UUID REFERENCES deals(id),
-  content TEXT NOT NULL,
-  is_read BOOLEAN DEFAULT false,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-### **환경 변수 설정**
-```env
-# Database
-DATABASE_URL=postgresql://username:password@localhost:5432/blackmarket
-DATABASE_SSL=true
-
-# JWT
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRES_IN=24h
-
-# Email
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-
-# File Upload
-UPLOAD_DIR=./uploads
-MAX_FILE_SIZE=5242880
-```
 
 ### **보안 고려사항**
 - **JWT 토큰**: Access Token + Refresh Token 구현
@@ -413,4 +291,4 @@ test: 테스트 추가
 chore: 빌드 프로세스 변경
 ```
 
-**⚡ Black Market v1.0.0** - 사이버펑크 테마의 식권포인트 P2P 거래 플랫폼
+**⚡ Black Market v1.0.1** - 사이버펑크 테마의 식권포인트 P2P 거래 플랫폼
