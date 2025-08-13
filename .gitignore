@@ -51,6 +51,12 @@ coverage/
 # nyc test coverage
 .nyc_output
 
+# Jest
+.jest/
+jest-coverage/
+*.test.js.snap
+*.test.jsx.snap
+
 # Dependency directories
 jspm_packages/
 
@@ -95,3 +101,10 @@ temp/
 
 # Vite
 .vite/
+
+# Test files (optional - uncomment if you don't want to commit test files)
+# __tests__/
+# *.test.js
+# *.test.jsx
+# *.spec.js
+# *.spec.jsx

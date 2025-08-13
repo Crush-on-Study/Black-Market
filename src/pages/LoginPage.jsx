@@ -6,6 +6,7 @@ import Card from '../components/Card';
 import SignupModal from '../components/SignupModal';
 import RotatingPartners from '../components/RotatingPartners';
 import { Hyperspeed } from '../external';
+import { companyDomainMap, defaultCompanyName } from '../data/mockData';
 import '../styles/pages/LoginPage.css';
 
 function LoginPage() {
@@ -76,20 +77,7 @@ function LoginPage() {
         const domain = formData.email.split('@')[1];
         
         // 도메인에 따른 회사명 매핑
-        let companyName = '';
-        switch (domain) {
-          case 'ekmtc.com':
-            companyName = '고려해운';
-            break;
-          case 'tescom.com':
-            companyName = '테스콤';
-            break;
-          case 'samsungcard.com':
-            companyName = '삼성카드';
-            break;
-          default:
-            companyName = 'Black Market';
-        }
+        const companyName = companyDomainMap[domain] || defaultCompanyName;
         
         // MainPage로 회사명과 도메인 정보 전달
         navigate('/main', { 

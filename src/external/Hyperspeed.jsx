@@ -557,7 +557,7 @@ const Hyperspeed = ({ effectOptions = {
         }
 
         if (this.options.isHyper) {
-          console.log(this.options.isHyper);
+          // TODO: 하이퍼스피드 상태 변경 로직 구현
         }
       }
 

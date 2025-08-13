@@ -44,11 +44,11 @@ function Header({
         break;
       case 'trade-requests':
         // 거래 요청 제안 확인 기능 (향후 구현)
-        console.log('거래 요청 제안 확인');
+        // TODO: 거래 요청 제안 확인 기능 구현
         break;
       case 'change-password':
         // 비밀번호 변경 기능 (향후 구현)
-        console.log('비밀번호 변경');
+        // TODO: 비밀번호 변경 기능 구현
         break;
       default:
         break;

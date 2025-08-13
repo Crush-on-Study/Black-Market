@@ -2,9 +2,11 @@ import { useState } from 'react';
 import Button from './Button';
 import Card from './Card';
 import Breadcrumb from './Breadcrumb';
+import { useToast } from '../contexts/ToastContext';
 import '../styles/components/BuyModal.css';
 
 function BuyModal({ isOpen, onClose }) {
+  const { showSuccessToast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
@@ -42,8 +44,8 @@ function BuyModal({ isOpen, onClose }) {
 
   const handleSubmit = () => {
     // 여기에 실제 등록 로직 구현
-    console.log('구매등록:', formData);
-    alert('구매글이 등록되었습니다!');
+    // TODO: 실제 API 호출 로직 구현
+    showSuccessToast('구매글이 등록되었습니다!');
     onClose();
     setCurrentStep(1);
     setFormData({

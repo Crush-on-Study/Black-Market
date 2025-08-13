@@ -20,12 +20,7 @@ function MessageModal({
     // 실제로는 백엔드 API 호출
     try {
       await new Promise(resolve => setTimeout(resolve, 1000)); // 시뮬레이션
-      console.log('쪽지 전송:', {
-        to: deal?.seller || '상대방',
-        message: message,
-        type: messageType,
-        dealId: deal?.id
-      });
+      // TODO: 실제 API 호출 로직 구현
       
       // 성공 후 모달 닫기
       setMessage('');
