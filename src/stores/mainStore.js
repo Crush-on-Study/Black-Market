@@ -34,7 +34,7 @@ export const useMainStore = create((set, get) => ({
   // 필터 옵션들
   statusOptions: [
     { value: 'all', label: '전체 상태' },
-    { value: 'selling', label: '판매 중' },
+    { value: 'selling', label: '거래 가능' },
     { value: 'completed', label: '거래 완료' }
   ],
   

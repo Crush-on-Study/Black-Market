@@ -1,20 +1,21 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button from './Button';
 import '../styles/components/Header.css';
 
-function Header({ 
+const Header = ({ 
   companyName, 
   userNickname, 
   userEmail, 
   userAvatar, 
-  onAvatarChange,
-  onSellRegister,
+  onAvatarChange, 
+  onSellRegister, 
   onBuyRegister 
-}) {
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -25,7 +26,9 @@ function Header({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleProfileClick = () => {
@@ -38,6 +41,7 @@ function Header({
 
   const handleProfileAction = (action) => {
     setIsProfileDropdownOpen(false);
+    
     switch (action) {
       case 'edit-photo':
         document.getElementById('avatar-upload').click();
@@ -50,6 +54,19 @@ function Header({
         // 비밀번호 변경 기능 (향후 구현)
         // TODO: 비밀번호 변경 기능 구현
         break;
+      case 'achievements':
+        // 현재 페이지의 state 정보를 유지하면서 업적 페이지로 이동
+        navigate('/achievements', { 
+          state: location.state || {
+            companyName: companyName || 'Black Market',
+            domain: '',
+            userEmail: userEmail || '',
+            nickname: userNickname || '사용자',
+            rememberMe: false,
+            sessionStartTime: Date.now()
+          }
+        });
+        break;
       default:
         break;
     }
@@ -58,7 +75,7 @@ function Header({
   return (
     <header className="main-header">
       <div className="header-content">
-                <div className="company-info">
+        <div className="company-info">
           <h1>⚡ {companyName} Black Market ⚡</h1>
         </div>
         
@@ -69,6 +86,21 @@ function Header({
             </Button>
             <Button variant="secondary" size="medium" onClick={onBuyRegister}>
               🟢 구매등록
+            </Button>
+            <Button variant="outline" size="medium" onClick={() => {
+              // 현재 페이지의 state 정보를 유지하면서 업적 페이지로 이동
+              navigate('/achievements', { 
+                state: location.state || {
+                  companyName: companyName || 'Black Market',
+                  domain: '',
+                  userEmail: userEmail || '',
+                  nickname: userNickname || '사용자',
+                  rememberMe: false,
+                  sessionStartTime: Date.now()
+                }
+              });
+            }}>
+              🏆 업적
             </Button>
           </div>
           
@@ -113,6 +145,9 @@ function Header({
                 </div>
                 <div className="dropdown-item" onClick={() => handleProfileAction('change-password')}>
                   🔒 비밀번호 변경
+                </div>
+                <div className="dropdown-item" onClick={() => handleProfileAction('achievements')}>
+                  🏆 업적 & 칭호
                 </div>
               </div>
             )}

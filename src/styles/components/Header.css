@@ -146,6 +146,20 @@
   transform: translateY(-2px);
 }
 
+/* 업적 버튼 특별 스타일 */
+.header-buttons .btn--outline:has-text("🏆") {
+  border-color: rgba(255, 215, 0, 0.4);
+  color: rgba(255, 215, 0, 0.9);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.header-buttons .btn--outline:has-text("🏆"):hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
 /* 프로필 드롭다운 */
 .profile-dropdown {
   position: absolute;

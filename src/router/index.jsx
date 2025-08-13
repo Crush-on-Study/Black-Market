@@ -3,11 +3,15 @@ import { lazy } from 'react';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const MainPage = lazy(() => import('../pages/MainPage'));
+const AchievementsPage = lazy(() => import('../pages/AchievementsPage'));
+const SecurityPage = lazy(() => import('../pages/SecurityPage'));
 
 // 라우트 정의
 export const ROUTES = {
   LOGIN: '/login',
-  MAIN: '/main'
+  MAIN: '/main',
+  ACHIEVEMENTS: '/achievements',
+  SECURITY: '/security'
 };
 
 // 라우터 생성
@@ -23,6 +27,14 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.MAIN,
     element: <MainPage />
+  },
+  {
+    path: ROUTES.ACHIEVEMENTS,
+    element: <AchievementsPage />
+  },
+  {
+    path: ROUTES.SECURITY,
+    element: <SecurityPage />
   }
 ]);
 

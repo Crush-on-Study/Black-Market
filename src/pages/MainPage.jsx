@@ -7,6 +7,7 @@ import PopularDeals from '../components/PopularDeals';
 import DealsBoard from '../components/DealsBoard';
 import PointPriceChart from '../components/PointPriceChart';
 import RecentTrades from '../components/RecentTrades';
+import ChatSidebar from '../components/ChatSidebar';
 import { useMainStore } from '../stores/mainStore';
 import { mockDeals, getExpiryDate } from '../data/mockData';
 import '../styles/pages/MainPage.css';
@@ -94,18 +95,22 @@ function MainPage() {
   };
 
   const handleStatusFilterChange = (option) => {
+    console.log('MainPage: Status filter changed to:', option);
     setStatusFilter(option.value);
   };
 
   const handleTypeFilterChange = (option) => {
+    console.log('MainPage: Type filter changed to:', option);
     setTypeFilter(option.value);
   };
 
   const handleItemsPerPageChange = (option) => {
+    console.log('MainPage: Items per page changed to:', option);
     setItemsPerPage(option.value);
   };
 
   const handleSearchChange = (e) => {
+    console.log('MainPage: Search term changed to:', e.target.value);
     setSearchTerm(e.target.value);
   };
 
@@ -226,7 +231,21 @@ function MainPage() {
 
               {/* 게시판 */}
               <DealsBoard
-                isPageLoaded={isPageLoaded}
+                // 데이터 props
+                deals={deals}
+                statusFilter={statusFilter}
+                typeFilter={typeFilter}
+                searchTerm={searchTerm}
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                statusOptions={statusOptions}
+                typeOptions={typeOptions}
+                itemsPerPageOptions={itemsPerPageOptions}
+                filteredDeals={currentDeals}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                
+                // 이벤트 핸들러 props
                 onSellerClick={handleSellerClick}
                 onTradeRequest={handleTradeRequest}
                 onStatusFilterChange={handleStatusFilterChange}
@@ -234,6 +253,13 @@ function MainPage() {
                 onItemsPerPageChange={handleItemsPerPageChange}
                 onSearchChange={handleSearchChange}
                 onPageChange={handlePageChange}
+                
+                // UI 설정 props
+                isPageLoaded={isPageLoaded}
+                showFilters={true}
+                showPagination={true}
+                showSearch={true}
+                maxItemsPerPage={50}
               />
             </div>
           </div>
@@ -383,6 +409,9 @@ function MainPage() {
           </div>
         </div>
       )}
+      
+      {/* 채팅 사이드바 */}
+      <ChatSidebar />
     </div>
   );
 }

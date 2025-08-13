@@ -4,32 +4,12 @@
   border-radius: 20px;
   overflow: visible;
   background: transparent;
+  border: none !important; /* 모든 테두리 제거 */
+  outline: none !important; /* 모든 outline 제거 */
 }
 
-.border-gradient-bottom {
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  opacity: 1;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(90deg, transparent, #ff00ff, transparent);
-  border-radius: 1px;
-  animation: star-movement-bottom 3s linear infinite;
-  z-index: 0;
-}
-
-.border-gradient-top {
-  position: absolute;
-  opacity: 1;
-  width: 100%;
-  height: 2px;
-  top: 0;
-  left: 0;
-  background: linear-gradient(90deg, transparent, #ff00ff, transparent);
-  border-radius: 1px;
-  animation: star-movement-top 3s linear infinite;
-  z-index: 0;
+.star-border-container:focus {
+  outline: none !important; /* 포커스 시에도 outline 제거 */
 }
 
 .inner-content {
@@ -46,34 +26,6 @@
     0 0 8px rgba(255, 0, 255, 0.3);
 }
 
-@keyframes star-movement-bottom {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-@keyframes star-movement-top {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-}
-
 /* Button variant 스타일 */
 .btn--primary .inner-content {
   background: transparent !important;
@@ -81,11 +33,6 @@
   color: #00d4ff;
   font-weight: 700;
   box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
-}
-
-.btn--primary .border-gradient-top,
-.btn--primary .border-gradient-bottom {
-  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
 }
 
 .btn--secondary .inner-content {
@@ -96,20 +43,10 @@
   box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
 }
 
-.btn--secondary .border-gradient-top,
-.btn--secondary .border-gradient-bottom {
-  background: linear-gradient(90deg, transparent, #00ff88, transparent);
-}
-
 .btn--outline .inner-content {
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
-}
-
-.btn--outline .border-gradient-top,
-.btn--outline .border-gradient-bottom {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
 }
 
 /* Button size 스타일 */

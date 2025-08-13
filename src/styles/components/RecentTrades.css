@@ -1,5 +1,8 @@
 .recent-trades-card {
-  height: 100%;
+  height: auto;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .card-header {
