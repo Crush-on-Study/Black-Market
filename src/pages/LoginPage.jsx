@@ -100,6 +100,11 @@ function LoginPage() {
     }
   }), []);
 
+  // Hyperspeed 컴포넌트를 useMemo로 메모이제이션
+  const memoizedHyperspeed = useMemo(() => (
+    <Hyperspeed options={hyperspeedOptions} />
+  ), [hyperspeedOptions]);
+
   // 로그인 시도 기록 초기화
   const resetLoginAttempts = useCallback(() => {
     setLoginAttempts(0);
@@ -329,7 +334,7 @@ function LoginPage() {
     <div className="login-container">
       {/* Hyperspeed 배경 */}
       <div className="hyperspeed-background-container">
-        <Hyperspeed effectOptions={hyperspeedOptions} />
+        {memoizedHyperspeed}
       </div>
 
       {/* 로그인 창 오버레이 */}
@@ -346,15 +351,15 @@ function LoginPage() {
               <div className="brand-features">
                 <div className="feature-item">
                   <span className="feature-icon">🔒</span>
-                  <span className="feature-text">보안 거래</span>
+                  <span className="feature-text">P2P 거래</span>
                 </div>
                 <div className="feature-item">
                   <span className="feature-icon">⚡</span>
-                  <span className="feature-text">빠른 처리</span>
+                  <span className="feature-text">실시간 채팅</span>
                 </div>
                 <div className="feature-item">
                   <span className="feature-icon">💎</span>
-                  <span className="feature-text">프리미엄 서비스</span>
+                  <span className="feature-text">게임화 환경</span>
                 </div>
               </div>
             </div>

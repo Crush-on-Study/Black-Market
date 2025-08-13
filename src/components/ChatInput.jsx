@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ChatInput = () => {
+const ChatInput = ({ userNickname = '사용자' }) => {
   const [message, setMessage] = useState('');
   
   const handleSubmit = (e) => {
@@ -21,13 +21,16 @@ const ChatInput = () => {
   return (
     <div className="chat-input">
       <form onSubmit={handleSubmit}>
+        <div className="input-label">
+          <span>{userNickname}</span>
+        </div>
         <div className="input-container">
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="메시지를 입력하세요..."
+            placeholder={`${userNickname}(으)로 대화해 보세요`}
             className="message-input"
           />
           <button 
@@ -35,7 +38,7 @@ const ChatInput = () => {
             className="send-button"
             disabled={!message.trim()}
           >
-            📤
+            전송
           </button>
         </div>
       </form>

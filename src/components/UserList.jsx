@@ -11,12 +11,23 @@ const UserList = () => {
   ];
   
   const onlineCount = onlineUsers.filter(user => user.status === 'online').length;
+  const onlineUserNames = onlineUsers.filter(user => user.status === 'online').map(user => user.name);
   
   return (
     <div className="user-list">
       <div className="users-header">
         <span>온라인</span>
         <span className="online-count">{onlineCount}명</span>
+      </div>
+      
+      {/* 온라인 유저명 목록 */}
+      <div className="online-users-list">
+        {onlineUserNames.map((name, index) => (
+          <div key={index} className="online-user-item">
+            <span className="online-indicator">●</span>
+            <span className="user-name">{name}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

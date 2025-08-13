@@ -1,160 +1,173 @@
-/* 업적 페이지 컨테이너 */
+/* 페이지 전체 레이아웃 */
 .achievements-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
-  padding: 2rem;
-  color: #ffffff;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  padding: 2rem 0; /* 상하 여백 추가 */
+  padding-top: 6rem; /* 헤더 높이만큼 상단 여백 추가 */
 }
 
-/* 페이지 헤더 */
+.page-content {
+  max-width: 1400px; /* 최대 너비 제한 */
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 0 2rem; /* 좌우 여백 추가 */
+  padding-top: 2rem; /* 상단 여백 추가 */
+}
+
 .page-header {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  text-align: center;
+  margin-bottom: 3rem; /* 하단 여백 증가 */
+  padding: 2rem 0; /* 상하 패딩 추가 */
 }
 
 .page-header h1 {
   font-size: 3rem;
-  font-weight: 800;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
   margin: 0;
-  background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
 }
 
 /* 페이지 탭 */
 .page-tabs {
   display: flex;
+  justify-content: center;
   gap: 1rem;
-  margin-bottom: 3rem;
-  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-  padding-bottom: 1rem;
+  margin-bottom: 3rem; /* 하단 여백 증가 */
+  padding: 1rem 0; /* 상하 패딩 추가 */
 }
 
 .tab-button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.1rem;
-  font-weight: 600;
-  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #ffffff;
+  padding: 1rem 2rem; /* 패딩 증가 */
   border-radius: 12px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
   transition: all 0.3s ease;
-  position: relative;
+  backdrop-filter: blur(10px);
 }
 
 .tab-button:hover {
-  color: #ffffff;
   background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
 }
 
 .tab-button.active {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.8);
   color: #00d4ff;
-  background: rgba(0, 212, 255, 0.15);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #00d4ff, #ff00ff);
-  border-radius: 2px;
+/* 탭 콘텐츠 */
+.tab-content {
+  padding: 2rem 0; /* 상하 패딩 추가 */
 }
 
-/* 페이지 콘텐츠 */
-.page-content {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 개요 섹션 */
+/* 개요 섹션 스타일 */
 .overview-section {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 3rem; /* 간격 증가 */
+  padding: 2rem 0; /* 상하 패딩 추가 */
 }
 
-/* 사용자 통계 */
+/* 사용자 통계 카드들 */
 .user-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* 최소 너비 증가 */
+  gap: 2rem; /* 간격 증가 */
+  margin-bottom: 3rem; /* 하단 여백 증가 */
 }
 
 .stats-card {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  backdrop-filter: blur(20px);
-  padding: 2rem;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  padding: 2rem; /* 내부 패딩 증가 */
 }
 
-/* 레벨 표시 */
+.stats-card:hover {
+  transform: translateY(-8px); /* 호버 효과 증가 */
+  box-shadow: 0 25px 50px rgba(0, 212, 255, 0.25);
+}
+
+/* 레벨 카드 */
+.level-card {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
 .level-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  text-align: center;
+  padding: 1.5rem;
 }
 
 .level-badge {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #00d4ff;
-  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-  animation: levelGlow 2s ease-in-out infinite alternate;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
 }
 
-@keyframes levelGlow {
-  0% { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3)); }
-  100% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)); }
+.level-number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #00d4ff;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+  position: relative;
+  z-index: 2;
+}
+
+.level-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.exp-container {
+  margin-top: 1rem;
 }
 
 .exp-bar {
-  width: 100%;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
   position: relative;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
 .exp-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00d4ff, #ff00ff);
-  border-radius: 10px;
-  transition: width 0.5s ease;
+  background: linear-gradient(90deg, #00d4ff, #0099cc);
+  border-radius: 6px;
+  transition: width 1s ease;
   position: relative;
 }
 
-.exp-fill::after {
-  content: '';
+.exp-particles {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: shimmer 2s infinite;
+  animation: shimmer 2s linear infinite;
 }
 
 @keyframes shimmer {
@@ -163,215 +176,454 @@
 }
 
 .exp-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #ffffff;
 }
 
-/* 진행률 요약 */
-.progress-summary h3 {
-  margin: 0 0 1.5rem 0;
-  color: #ffffff;
-  font-size: 1.3rem;
+.current-exp {
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+.exp-separator {
+  color: #666;
+}
+
+.max-exp {
+  color: #999;
+}
+
+/* 진행률 카드 */
+.progress-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.progress-summary {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.progress-title {
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .progress-circle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress-ring-bg {
+  fill: none;
+  stroke: rgba(255, 215, 0, 0.2);
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: #ffd700;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.progress-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .progress-number {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #00d4ff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .progress-text {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-top: 0.2rem;
 }
 
-/* 칭호 요약 */
-.badge-summary h3 {
-  margin: 0 0 1.5rem 0;
-  color: #ffffff;
-  font-size: 1.3rem;
+/* 칭호 카드 */
+.badge-card {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+.badge-summary {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.badge-title {
+  color: #8a2be2;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
 }
 
 .badge-count {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.count-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8a2be2, #4b0082);
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+  position: relative;
+}
+
+.count-circle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #8a2be2, #4b0082, #8a2be2);
+  border-radius: 50%;
+  z-index: -1;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .count-number {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #ff00ff;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.count-info {
+  text-align: center;
 }
 
 .count-text {
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  color: #8a2be2;
+  font-weight: bold;
 }
 
-/* 최근 업적 */
-.recent-achievements h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 2rem 0;
+.count-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+/* 최근 달성한 업적 */
+.recent-achievements {
+  margin-bottom: 3rem; /* 하단 여백 증가 */
+  padding: 2rem 0; /* 상하 패딩 추가 */
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem; /* 하단 여백 증가 */
+  position: relative;
+}
+
+.section-title {
+  font-size: 1.8rem; /* 폰트 크기 증가 */
   color: #ffffff;
+  margin-bottom: 1.5rem; /* 하단 여백 증가 */
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.section-decoration {
+  width: 120px; /* 너비 증가 */
+  height: 4px; /* 높이 증가 */
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  margin: 0 auto;
+  border-radius: 2px;
 }
 
 .achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 최소 너비 증가 */
+  gap: 2rem; /* 간격 증가 */
 }
 
 .achievement-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  padding: 2rem; /* 내부 패딩 증가 */
+}
+
+.achievement-card:hover {
+  transform: translateY(-8px); /* 호버 효과 증가 */
+  box-shadow: 0 25px 50px rgba(0, 212, 255, 0.35);
 }
 
 .achievement-card.completed {
-  border-color: rgba(0, 255, 136, 0.4);
-  background: rgba(0, 255, 136, 0.05);
+  background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .achievement-icon {
-  font-size: 3rem;
-  flex-shrink: 0;
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.6));
+}
+
+.status-badge {
+  background: linear-gradient(45deg, #00ff00, #00cc00);
+  color: #000;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .achievement-info {
-  flex: 1;
+  margin-bottom: 1rem;
 }
 
-.achievement-info h4 {
-  margin: 0 0 0.5rem 0;
+.achievement-name {
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.achievement-info p {
-  margin: 0 0 0.5rem 0;
-  color: rgba(255, 255, 255, 0.8);
+.achievement-description {
+  color: #cccccc;
   font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.achievement-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
 }
 
 .completion-date {
-  font-size: 0.8rem;
-  color: rgba(0, 212, 255, 0.8);
-  font-style: italic;
+  color: #00d4ff;
 }
 
-/* 칭호 섹션 */
-.badges-section {
+.achievement-reward {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.achievement-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.achievement-card:hover .achievement-glow {
+  opacity: 1;
+}
+
+/* 업적 통계 요약 */
+.achievement-stats {
+  margin-top: 3rem; /* 상단 여백 증가 */
+  padding: 2rem 0; /* 상하 패딩 추가 */
+}
+
+.stats-summary-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem; /* 내부 패딩 증가 */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 최소 너비 증가 */
+  gap: 2rem; /* 간격 증가 */
+  padding: 0; /* 기존 패딩 제거 (카드에 패딩 추가됨) */
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(0, 212, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.stat-content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+/* 배지 섹션 */
+.badges-section {
+  padding: 2rem 0; /* 상하 패딩 추가 */
 }
 
 .badges-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 최소 너비 증가 */
+  gap: 2rem; /* 간격 증가 */
 }
 
 .badge-card {
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  backdrop-filter: blur(20px);
-  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+  padding: 2rem; /* 내부 패딩 증가 */
+}
+
+.badge-card:hover {
+  transform: translateY(-8px); /* 호버 효과 증가 */
+  box-shadow: 0 25px 50px rgba(138, 43, 226, 0.3);
 }
 
 .badge-card.unlocked {
   border-color: rgba(0, 255, 136, 0.4);
-  background: rgba(0, 255, 136, 0.05);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
 }
 
 .badge-card.locked {
-  opacity: 0.6;
-  filter: grayscale(1);
-}
-
-.badge-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
 }
 
 .badge-icon {
-  font-size: 4rem;
+  font-size: 3rem;
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.badge-info {
-  text-align: center;
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
 }
 
 .badge-info h4 {
-  margin: 0 0 0.5rem 0;
   color: #ffffff;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .badge-info p {
-  margin: 0 0 1rem 0;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.4;
 }
 
 .badge-rarity {
   display: inline-block;
+  background: rgba(255, 0, 255, 0.2);
+  color: #ff00ff;
   padding: 0.25rem 0.75rem;
-  background: rgba(0, 212, 255, 0.2);
-  color: #00d4ff;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  border: 1px solid rgba(255, 0, 255, 0.3);
 }
 
 .unlock-date {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  font-size: 0.8rem;
-  color: rgba(0, 255, 136, 0.8);
-  font-style: italic;
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 255, 136, 0.3);
 }
 
 /* 퀘스트 섹션 */
 .quests-section {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  padding: 2rem 0; /* 상하 패딩 추가 */
 }
 
 .quests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 최소 너비 증가 */
+  gap: 2rem; /* 간격 증가 */
 }
 
 .quest-card {
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
   transition: all 0.3s ease;
+  padding: 2rem; /* 내부 패딩 증가 */
+}
+
+.quest-card:hover {
+  transform: translateY(-8px); /* 호버 효과 증가 */
+  box-shadow: 0 25px 50px rgba(0, 212, 255, 0.3);
 }
 
 .quest-card.completed {
@@ -379,14 +631,14 @@
   background: rgba(0, 255, 136, 0.05);
 }
 
-.quest-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+.quest-card.in-progress {
+  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.05);
 }
 
 .quest-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1rem;
 }
@@ -394,6 +646,7 @@
 .quest-icon {
   font-size: 2.5rem;
   flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
 }
 
 .quest-info {
@@ -401,15 +654,17 @@
 }
 
 .quest-info h4 {
-  margin: 0 0 0.25rem 0;
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .quest-info p {
-  margin: 0;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
 }
 
 .quest-status {
@@ -417,97 +672,175 @@
   flex-shrink: 0;
 }
 
-/* 퀘스트 진행률 */
 .quest-progress {
   margin: 1rem 0;
 }
 
 .progress-bar {
   width: 100%;
-  height: 12px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00d4ff, #ff00ff);
-  border-radius: 6px;
-  transition: width 0.5s ease;
+  background: linear-gradient(90deg, #00d4ff, #00ff88);
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
 .progress-text {
-  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-/* 퀘스트 보상 */
 .quest-reward {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .reward-badge {
-  font-size: 0.9rem;
-  color: #ff00ff;
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
+  border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .reward-exp {
-  font-size: 0.9rem;
+  background: rgba(0, 212, 255, 0.2);
   color: #00d4ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
+  border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
 /* 반응형 디자인 */
-@media (max-width: 768px) {
-  .achievements-page {
-    padding: 1rem;
-  }
-  
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
-  
-  .page-tabs {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  
-  .tab-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+@media (max-width: 1200px) {
+  .page-content {
+    padding: 0 1.5rem; /* 좌우 여백 조정 */
   }
   
   .user-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
   }
   
   .achievements-grid,
   .badges-grid,
   .quests-grid {
-    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .achievements-page {
+    padding: 1rem 0; /* 상하 여백 조정 */
+    padding-top: 5rem; /* 모바일에서 헤더 높이만큼 상단 여백 */
   }
   
-  .level-badge {
-    font-size: 2rem;
+  .page-content {
+    padding: 0 1rem; /* 좌우 여백 조정 */
+    padding-top: 1.5rem; /* 상단 여백 조정 */
   }
   
-  .progress-number,
-  .count-number {
-    font-size: 2rem;
+  .page-header {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+  }
+  
+  .page-header h1 {
+    font-size: 2.5rem; /* 폰트 크기 조정 */
+  }
+  
+  .page-tabs {
+    margin-bottom: 2rem;
+    padding: 0.5rem 0;
+    flex-wrap: wrap; /* 탭 줄바꿈 허용 */
+    justify-content: center;
+  }
+  
+  .tab-button {
+    padding: 0.75rem 1.5rem; /* 패딩 조정 */
+    font-size: 0.9rem;
+  }
+  
+  .overview-section {
+    gap: 2rem;
+    padding: 1rem 0;
+  }
+  
+  .user-stats {
+    grid-template-columns: 1fr; /* 1열로 변경 */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stats-card {
+    padding: 1.5rem;
+  }
+  
+  .achievements-grid,
+  .badges-grid,
+  .quests-grid {
+    grid-template-columns: 1fr; /* 1열로 변경 */
+    gap: 1.5rem;
+  }
+  
+  .achievement-card,
+  .badge-card,
+  .quest-card {
+    padding: 1.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2열로 변경 */
+    gap: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .achievements-page {
+    padding-top: 4.5rem; /* 작은 모바일에서 헤더 높이만큼 상단 여백 */
+  }
+  
+  .page-content {
+    padding: 0 0.75rem; /* 좌우 여백 더 줄임 */
+    padding-top: 1rem; /* 상단 여백 조정 */
+  }
+  
+  .page-header h1 {
+    font-size: 2rem; /* 폰트 크기 더 줄임 */
+  }
+  
+  .tab-button {
+    padding: 0.5rem 1rem; /* 패딩 더 줄임 */
+    font-size: 0.8rem;
+  }
+  
+  .stats-card,
+  .achievement-card,
+  .badge-card,
+  .quest-card {
+    padding: 1rem; /* 패딩 더 줄임 */
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr; /* 1열로 변경 */
   }
 }

@@ -10,13 +10,15 @@ const Header = ({
   userAvatar, 
   onAvatarChange, 
   onSellRegister, 
-  onBuyRegister 
+  onBuyRegister,
+  showBackButton = false,
+  onBackClick = null
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,35 +26,15 @@ const Header = ({
         setIsProfileDropdownOpen(false);
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleProfileClick = () => {
-    setIsProfileDropdownOpen(!isProfileDropdownOpen);
-  };
-
-  const handleLogout = () => {
-    navigate('/login');
-  };
-
-  const handleProfileAction = (action) => {
-    setIsProfileDropdownOpen(false);
     
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  const handleMenuClick = (action) => {
     switch (action) {
-      case 'edit-photo':
-        document.getElementById('avatar-upload').click();
-        break;
-      case 'trade-requests':
-        // 거래 요청 제안 확인 기능 (향후 구현)
-        // TODO: 거래 요청 제안 확인 기능 구현
-        break;
-      case 'change-password':
-        // 비밀번호 변경 기능 (향후 구현)
-        // TODO: 비밀번호 변경 기능 구현
+      case 'profile':
+        setIsProfileDropdownOpen(!isProfileDropdownOpen);
         break;
       case 'achievements':
         // 현재 페이지의 state 정보를 유지하면서 업적 페이지로 이동
@@ -67,99 +49,155 @@ const Header = ({
           }
         });
         break;
+      case 'trade-requests':
+        // 거래요청 확인 모달 열기 (향후 구현)
+        alert('거래요청 확인 기능은 준비 중입니다.\n\n판매글에 대한 쪽지와 거래요청을 확인할 수 있습니다.');
+        setIsProfileDropdownOpen(false);
+        break;
+      case 'change-password':
+        // 비밀번호 변경 모달 열기 (향후 구현)
+        alert('비밀번호 변경 기능은 준비 중입니다.\n\n현재 비밀번호를 입력하고 새로운 비밀번호로 변경할 수 있습니다.');
+        setIsProfileDropdownOpen(false);
+        break;
       default:
         break;
     }
   };
-
+  
+  const handleBackClick = () => {
+    if (onBackClick) {
+      onBackClick();
+    } else {
+      // 기본 뒤로가기: 메인 페이지로
+      navigate('/main', { 
+        state: location.state || {
+          companyName: companyName || 'Black Market',
+          domain: '',
+          userEmail: userEmail || '',
+          nickname: userNickname || '사용자',
+          rememberMe: false,
+          sessionStartTime: Date.now()
+        }
+      });
+    }
+  };
+  
   return (
-    <header className="main-header">
+    <header className="header">
       <div className="header-content">
-        <div className="company-info">
-          <h1>⚡ {companyName} Black Market ⚡</h1>
+        <div className="header-left">
+          <div className="company-info">
+            <span className="company-name">{companyName}</span>
+          </div>
+          
+          {/* 뒤로가기 버튼 - showBackButton이 true일 때만 표시 */}
+          {showBackButton && (
+            <button 
+              className="back-button"
+              onClick={handleBackClick}
+              title="메인으로 돌아가기"
+            >
+              ← 메인으로
+            </button>
+          )}
         </div>
         
-        <div className="right-section">
-          <div className="header-buttons">
-            <Button variant="primary" size="medium" onClick={onSellRegister}>
-              🔴 판매등록
-            </Button>
-            <Button variant="secondary" size="medium" onClick={onBuyRegister}>
-              🟢 구매등록
-            </Button>
-            <Button variant="outline" size="medium" onClick={() => {
-              // 현재 페이지의 state 정보를 유지하면서 업적 페이지로 이동
-              navigate('/achievements', { 
-                state: location.state || {
-                  companyName: companyName || 'Black Market',
-                  domain: '',
-                  userEmail: userEmail || '',
-                  nickname: userNickname || '사용자',
-                  rememberMe: false,
-                  sessionStartTime: Date.now()
-                }
-              });
-            }}>
-              🏆 업적
-            </Button>
-          </div>
-          
-          <div className="user-profile" ref={dropdownRef}>
-            <div className="avatar-container">
-              <img 
-                src={userAvatar || '/default-avatar.svg'} 
-                alt="프로필" 
-                className="user-avatar"
-                onClick={handleProfileClick}
-              />
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                      onAvatarChange(e.target.result);
-                    };
-                    reader.readAsDataURL(file);
+        {/* 네비게이션 탭 */}
+        <nav className="header-nav">
+          <div className="nav-tabs">
+            <button 
+              className="nav-tab"
+              onClick={() => {
+                onSellRegister();
+              }}
+            >
+              판매등록
+            </button>
+            <button 
+              className="nav-tab"
+              onClick={() => {
+                onBuyRegister();
+              }}
+            >
+              구매등록
+            </button>
+            <button 
+              className="nav-tab"
+              onClick={() => {
+                handleMenuClick('achievements');
+              }}
+            >
+              업적
+            </button>
+            <button 
+              className="nav-tab"
+              onClick={() => {
+                // About Us 페이지로 이동
+                navigate('/about', { 
+                  state: location.state || {
+                    companyName: companyName || 'Black Market',
+                    domain: '',
+                    userEmail: userEmail || '',
+                    nickname: userNickname || '사용자',
+                    rememberMe: false,
+                    sessionStartTime: Date.now()
                   }
-                }}
-              />
-            </div>
-            <div className="user-info">
-              <span className="user-nickname">{userNickname}</span>
-              <span className="user-email">{userEmail}</span>
-            </div>
-            
-            {/* 프로필 드롭다운 메뉴 */}
-            {isProfileDropdownOpen && (
-              <div className="profile-dropdown">
-                <div className="dropdown-item" onClick={() => handleProfileAction('edit-photo')}>
-                  📷 사진 수정
-                </div>
-                <div className="dropdown-item" onClick={() => handleProfileAction('trade-requests')}>
-                  📋 거래 요청 제안 확인
-                </div>
-                <div className="dropdown-item" onClick={() => handleProfileAction('change-password')}>
-                  🔒 비밀번호 변경
-                </div>
-                <div className="dropdown-item" onClick={() => handleProfileAction('achievements')}>
-                  🏆 업적 & 칭호
-                </div>
-              </div>
-            )}
+                });
+              }}
+            >
+              About Us
+            </button>
+          </div>
+        </nav>
+        
+        <div className="header-right">
+          <div className="user-info" onClick={() => handleMenuClick('profile')}>
+            <span className="user-avatar">{userAvatar}</span>
+            <span className="user-nickname">{userNickname}</span>
+            <span className="dropdown-arrow">▼</span>
           </div>
           
-          <Button variant="outline" size="medium" onClick={handleLogout}>
+          {/* 로그아웃 버튼 */}
+          <button 
+            className="logout-button"
+            onClick={() => {
+              // 로그아웃 처리
+              navigate('/login');
+            }}
+            title="로그아웃"
+          >
             로그아웃
-          </Button>
+          </button>
+          
+          {isProfileDropdownOpen && (
+            <div className="profile-dropdown" ref={dropdownRef}>
+              <div className="dropdown-item">
+                <span className="dropdown-label">이메일</span>
+                <span className="dropdown-value">{userEmail}</span>
+              </div>
+              <div className="dropdown-item">
+                <span className="dropdown-label">닉네임</span>
+                <span className="dropdown-value">{userNickname}</span>
+              </div>
+              <div className="dropdown-item">
+                <button onClick={onAvatarChange}>아바타 변경</button>
+              </div>
+              <div className="dropdown-item">
+                <button onClick={() => handleMenuClick('trade-requests')}>
+                  📋 거래요청 확인
+                </button>
+              </div>
+              <div className="dropdown-item">
+                <button onClick={() => handleMenuClick('change-password')}>
+                  🔒 비밀번호 변경
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
   );
-}
+};
 
 export default Header;

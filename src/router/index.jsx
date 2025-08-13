@@ -1,10 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 
+// 페이지 컴포넌트들을 lazy loading으로 import
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const MainPage = lazy(() => import('../pages/MainPage'));
 const AchievementsPage = lazy(() => import('../pages/AchievementsPage'));
 const SecurityPage = lazy(() => import('../pages/SecurityPage'));
+const AboutUsPage = lazy(() => import('../pages/AboutUsPage'));
 
 // 라우트 정의
 export const ROUTES = {
@@ -21,20 +23,24 @@ export const router = createBrowserRouter([
     element: <LoginPage />
   },
   {
-    path: ROUTES.LOGIN,
+    path: '/login',
     element: <LoginPage />
   },
   {
-    path: ROUTES.MAIN,
+    path: '/main',
     element: <MainPage />
   },
   {
-    path: ROUTES.ACHIEVEMENTS,
+    path: '/achievements',
     element: <AchievementsPage />
   },
   {
-    path: ROUTES.SECURITY,
+    path: '/security',
     element: <SecurityPage />
+  },
+  {
+    path: '/about',
+    element: <AboutUsPage />
   }
 ]);
 

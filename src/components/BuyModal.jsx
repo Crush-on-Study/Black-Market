@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from './Button';
 import Card from './Card';
 import Breadcrumb from './Breadcrumb';
+import DropdownSelect from './DropdownSelect';
 import { useToast } from '../contexts/ToastContext';
 import '../styles/components/BuyModal.css';
 
@@ -16,6 +17,14 @@ function BuyModal({ isOpen, onClose }) {
     urgency: 'normal'
   });
 
+  // 긴급도 옵션
+  const urgencyOptions = [
+    { value: 'low', label: '🟢 낮음' },
+    { value: 'normal', label: '🟡 보통' },
+    { value: 'high', label: '🟠 높음' },
+    { value: 'urgent', label: '🔴 긴급' }
+  ];
+
   const steps = [
     { id: 1, title: '구매 정보', description: '구매하고 싶은 포인트 정보를 입력하세요' },
     { id: 2, title: '가격 설정', description: '최대 구매 가격을 설정하세요' },
@@ -27,6 +36,13 @@ function BuyModal({ isOpen, onClose }) {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleUrgencyChange = (option) => {
+    setFormData(prev => ({
+      ...prev,
+      urgency: option.value
     }));
   };
 
@@ -109,17 +125,12 @@ function BuyModal({ isOpen, onClose }) {
 
                 <div className="form-group">
                   <label htmlFor="urgency">긴급도</label>
-                  <select
-                    id="urgency"
-                    name="urgency"
-                    value={formData.urgency}
-                    onChange={handleInputChange}
-                  >
-                    <option value="low">낮음</option>
-                    <option value="normal">보통</option>
-                    <option value="high">높음</option>
-                    <option value="urgent">긴급</option>
-                  </select>
+                  <DropdownSelect
+                    options={urgencyOptions}
+                    value={urgencyOptions.find(option => option.value === formData.urgency)}
+                    onChange={handleUrgencyChange}
+                    placeholder="선택"
+                  />
                 </div>
 
                 <div className="form-group full-width">

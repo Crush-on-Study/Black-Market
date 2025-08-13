@@ -7,7 +7,7 @@ import PopularDeals from '../components/PopularDeals';
 import DealsBoard from '../components/DealsBoard';
 import PointPriceChart from '../components/PointPriceChart';
 import RecentTrades from '../components/RecentTrades';
-import ChatSidebar from '../components/ChatSidebar';
+import ChatBar from '../components/ChatBar';
 import { useMainStore } from '../stores/mainStore';
 import { mockDeals, getExpiryDate } from '../data/mockData';
 import '../styles/pages/MainPage.css';
@@ -158,6 +158,34 @@ function MainPage() {
     loadDeals();
   }, [navigate, location.state, companyName, nickname]);
 
+  // 업적 페이지에서 모달 열기 시그널 받기
+  useEffect(() => {
+    const handleOpenSellModal = () => {
+      handleSellRegister();
+    };
+    
+    const handleOpenBuyModal = () => {
+      handleBuyRegister();
+    };
+    
+    window.addEventListener('openSellModal', handleOpenSellModal);
+    window.addEventListener('openBuyModal', handleOpenBuyModal);
+    
+    return () => {
+      window.removeEventListener('openSellModal', handleOpenSellModal);
+      window.removeEventListener('openBuyModal', handleOpenBuyModal);
+    };
+  }, []);
+  
+  // 페이지 로드 시 애니메이션
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPageLoaded(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   const handleLogout = () => {
     navigate('/login');
   };
@@ -202,15 +230,16 @@ function MainPage() {
 
   return (
     <div className={`main-container ${isPageLoaded ? 'loaded' : ''}`}>
-      {/* 헤더 */}
-      <Header
-        companyName={companyName}
-        userNickname={userNickname || '사용자'}
-        userEmail={userEmail}
-        userAvatar={userAvatar}
+      {/* Header 컴포넌트 사용 */}
+      <Header 
+        companyName={location.state?.companyName || 'Black Market'}
+        userNickname={location.state?.nickname || '사용자'}
+        userEmail={location.state?.userEmail || ''}
+        userAvatar={location.state?.userAvatar || '👤'}
         onAvatarChange={setUserAvatar}
         onSellRegister={handleSellRegister}
         onBuyRegister={handleBuyRegister}
+        showBackButton={false}
       />
 
       {/* 메인 콘텐츠 */}
@@ -411,7 +440,7 @@ function MainPage() {
       )}
       
       {/* 채팅 사이드바 */}
-      <ChatSidebar />
+      <ChatBar userNickname={location.state?.nickname || '사용자'} />
     </div>
   );
 }

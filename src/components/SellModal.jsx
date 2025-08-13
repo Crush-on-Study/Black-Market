@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from './Button';
 import Card from './Card';
 import Breadcrumb from './Breadcrumb';
+import DropdownSelect from './DropdownSelect';
 import { useToast } from '../contexts/ToastContext';
 import '../styles/components/SellModal.css';
 
@@ -16,6 +17,14 @@ function SellModal({ isOpen, onClose }) {
     expiryDays: 7
   });
 
+  // 유효기간 옵션
+  const expiryOptions = [
+    { value: 3, label: '3일' },
+    { value: 7, label: '7일' },
+    { value: 14, label: '14일' },
+    { value: 30, label: '30일' }
+  ];
+
   const steps = [
     { id: 1, title: '판매 정보', description: '판매할 포인트 정보를 입력하세요' },
     { id: 2, title: '가격 설정', description: '판매 가격을 설정하세요' },
@@ -27,6 +36,13 @@ function SellModal({ isOpen, onClose }) {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleExpiryChange = (option) => {
+    setFormData(prev => ({
+      ...prev,
+      expiryDays: option.value
     }));
   };
 
@@ -109,17 +125,12 @@ function SellModal({ isOpen, onClose }) {
 
                 <div className="form-group">
                   <label htmlFor="expiryDays">유효기간 (일)</label>
-                  <select
-                    id="expiryDays"
-                    name="expiryDays"
-                    value={formData.expiryDays}
-                    onChange={handleInputChange}
-                  >
-                    <option value={3}>3일</option>
-                    <option value={7}>7일</option>
-                    <option value={14}>14일</option>
-                    <option value={30}>30일</option>
-                  </select>
+                  <DropdownSelect
+                    options={expiryOptions}
+                    value={expiryOptions.find(option => option.value === formData.expiryDays)}
+                    onChange={handleExpiryChange}
+                    placeholder="선택"
+                  />
                 </div>
 
                 <div className="form-group full-width">
