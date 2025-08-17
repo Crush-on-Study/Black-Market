@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 데이터베이스
+  db:
+    image: postgres:15
+    container_name: blackmarket_db
+    restart: always
+    environment:
+      POSTGRES_DB: blackmarket
+      POSTGRES_USER: blackmarket_user
+      POSTGRES_PASSWORD: blackmarket_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - blackmarket_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blackmarket_user -d blackmarket"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # FastAPI 애플리케이션
+  api:
+    build: .
+    container_name: blackmarket_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://blackmarket_user:blackmarket_password@db:5432/blackmarket
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    networks:
+      - blackmarket_network
+
+  # pgAdmin (선택사항 - 데이터베이스 관리 도구)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: blackmarket_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@blackmarket.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - blackmarket_network
+
+volumes:
+  postgres_data:
+
+networks:
+  blackmarket_network:
+    driver: bridge
