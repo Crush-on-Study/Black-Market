@@ -108,7 +108,7 @@ const AboutUsPage = () => {
               </div>
               
               <div className="developer-info">
-                <h3 className="developer-name">기획 & 디자인 & 프론트엔드</h3>
+                <h3 className="developer-name">기획 & 디자인 & 프론트엔드 & QA</h3>
                 <p className="developer-description">
                   사용자 경험과 시각적 디자인에 중점을 두고 
                   직관적이고 아름다운 인터페이스를 구현했습니다.
@@ -118,11 +118,11 @@ const AboutUsPage = () => {
                   <h4>주요 기술</h4>
                   <div className="skills-grid">
                     <span className="skill-tag">React</span>
-                    <span className="skill-tag">JavaScript</span>
+                    <span className="skill-tag">Zustand</span>
                     <span className="skill-tag">CSS3</span>
                     <span className="skill-tag">UI/UX</span>
-                    <span className="skill-tag">기획</span>
-                    <span className="skill-tag">디자인</span>
+                    <span className="skill-tag">Figma</span>
+                    <span className="skill-tag">jest</span>
                   </div>
                 </div>
                 
@@ -134,6 +134,7 @@ const AboutUsPage = () => {
                     <li>⚛️ React 기반 프론트엔드 개발</li>
                     <li>📱 반응형 웹 디자인 구현</li>
                     <li>🎯 사용자 인터페이스 최적화</li>
+                    <li>🔍 테스트 코드 작성 및 테스트</li>
                   </ul>
                 </div>
                 

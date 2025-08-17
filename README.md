@@ -205,8 +205,8 @@ npm run build
 ## 👨‍💻 개발팀
 
 ### Frontend Developer - 강현빈
-- **담당 영역**: 기획, 디자인, 프론트엔드 개발
-- **주요 기술**: React, JavaScript, CSS3, UI/UX
+- **담당 영역**: 기획, 디자인, 프론트엔드 개발 , QA
+- **주요 기술**: React, Zustand, CSS3, UI/UX, jest
 - **GitHub**: [@Crush-on-Study](https://github.com/Crush-on-Study)
 - **Portfolio**: [포트폴리오](https://myresume-3d74d.web.app)
 
