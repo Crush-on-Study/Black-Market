@@ -1,0 +1,148 @@
+.recent-trades-card {
+  height: auto;
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.recent-trades {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.trade-item:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateX(4px);
+}
+
+.trade-item.buy {
+  border-left-color: #4caf50;
+}
+
+.trade-item.sell {
+  border-left-color: #f44336;
+}
+
+.trade-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.trade-icon {
+  font-size: 1.2rem;
+}
+
+.trade-icon.buy {
+  color: #4caf50;
+}
+
+.trade-icon.sell {
+  color: #f44336;
+}
+
+.trade-user {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.trade-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex: 1;
+  text-align: right;
+}
+
+.trade-points {
+  color: #00d4ff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.trade-price {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.trade-time {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-style: italic;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* 애니메이션 */
+.trade-item {
+  animation: slideInRight 0.4s ease-out forwards;
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.trade-item:nth-child(1) { animation-delay: 0.1s; }
+.trade-item:nth-child(2) { animation-delay: 0.2s; }
+.trade-item:nth-child(3) { animation-delay: 0.3s; }
+.trade-item:nth-child(4) { animation-delay: 0.4s; }
+.trade-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .trade-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .trade-details {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .trade-time {
+    text-align: center;
+  }
+}

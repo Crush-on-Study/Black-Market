@@ -1,0 +1,675 @@
+/* About Us 페이지 전체 레이아웃 */
+.about-us-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  padding: 2rem 0;
+  padding-top: 6rem; /* 헤더 높이만큼 상단 여백 */
+}
+
+.page-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  padding-top: 2rem;
+}
+
+/* 페이지 헤더 */
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.page-header h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  margin: 0 0 1rem 0;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* 프로젝트 소개 */
+.project-intro {
+  margin-bottom: 3rem;
+}
+
+.intro-card {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  padding: 2.5rem;
+}
+
+.intro-content h2 {
+  color: #00d4ff;
+  font-size: 2rem;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
+
+.project-description {
+  color: #ffffff;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.project-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
+}
+
+.feature-text {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 개발자 소개 섹션 */
+.developers-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.developers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+}
+
+.developer-card {
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.developer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.developer-card.frontend {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+.developer-card.backend {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.developer-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.developer-avatar {
+  font-size: 3rem;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+}
+
+.developer-role {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.developer-name {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.developer-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.developer-skills {
+  margin-bottom: 1.5rem;
+}
+
+.developer-skills h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: rgba(0, 212, 255, 0.2);
+  color: #00d4ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.developer-responsibilities h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+}
+
+.developer-responsibilities ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.developer-responsibilities li {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0;
+}
+
+/* 개발자 링크 */
+.developer-links {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.developer-links h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+}
+
+.links-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.link-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.link-button.github {
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.link-button.github:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.link-button.portfolio {
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.link-button.portfolio:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+}
+
+.link-icon {
+  font-size: 1rem;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.link-text {
+  font-weight: 600;
+}
+
+/* 프로젝트 정보 */
+.project-info {
+  margin-bottom: 3rem;
+}
+
+.info-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+}
+
+.info-card h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.info-value {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* 오픈소스 섹션 */
+.opensource-section {
+  margin-bottom: 3rem;
+}
+
+.opensource-card {
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  padding: 2rem;
+}
+
+.opensource-card h3 {
+  color: #ffa500;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+}
+
+.opensource-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+.opensource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.opensource-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.opensource-item:hover {
+  border-color: rgba(255, 165, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(255, 165, 0, 0.1);
+}
+
+.opensource-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.opensource-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.5));
+  flex-shrink: 0;
+}
+
+.opensource-info {
+  flex: 1;
+}
+
+.opensource-name {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.opensource-description-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.opensource-links {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.opensource-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.opensource-link.github {
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.opensource-link.github:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.opensource-link.website {
+  background: rgba(255, 165, 0, 0.2);
+  color: #ffa500;
+  border-color: rgba(255, 165, 0, 0.4);
+}
+
+.opensource-link.website:hover {
+  background: rgba(255, 165, 0, 0.3);
+  border-color: rgba(255, 165, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.opensource-link.react {
+  background: rgba(97, 218, 251, 0.2);
+  color: #61dafb;
+  border-color: rgba(97, 218, 251, 0.4);
+}
+
+.opensource-link.react:hover {
+  background: rgba(97, 218, 251, 0.3);
+  border-color: rgba(97, 218, 251, 0.6);
+  transform: translateY(-1px);
+}
+
+.opensource-link.vite {
+  background: rgba(100, 108, 245, 0.2);
+  color: #646cff;
+  border-color: rgba(100, 108, 245, 0.4);
+}
+
+.opensource-link.vite:hover {
+  background: rgba(100, 108, 245, 0.3);
+  border-color: rgba(100, 108, 245, 0.6);
+  transform: translateY(-1px);
+}
+
+.opensource-link.zustand {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+.opensource-link.zustand:hover {
+  background: rgba(255, 193, 7, 0.3);
+  border-color: rgba(255, 193, 7, 0.6);
+  transform: translateY(-1px);
+}
+
+.opensource-license {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.license-badge {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+.license-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+
+/* 연락처 섹션 */
+.contact-section {
+  margin-bottom: 2rem;
+}
+
+.contact-card {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 0, 0, 0.8));
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  padding: 2rem;
+}
+
+.contact-card h3 {
+  color: #00ff88;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.contact-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.contact-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+}
+
+.contact-text {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .page-content {
+    padding: 0 1.5rem;
+  }
+  
+  .developers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-us-page {
+    padding: 1rem 0;
+    padding-top: 5rem;
+  }
+  
+  .page-content {
+    padding: 0 1rem;
+    padding-top: 1.5rem;
+  }
+  
+  .page-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+  
+  .intro-card {
+    padding: 1.5rem;
+  }
+  
+  .intro-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .project-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .developer-card {
+    padding: 1.5rem;
+  }
+  
+  .developer-name {
+    font-size: 1.3rem;
+  }
+  
+  .skills-grid {
+    gap: 0.4rem;
+  }
+  
+  .skill-tag {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* 모바일에서 링크 버튼 조정 */
+  .links-grid {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .link-button {
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  /* 모바일에서 오픈소스 섹션 조정 */
+  .opensource-card {
+    padding: 1.5rem;
+  }
+  
+  .opensource-item {
+    padding: 1rem;
+  }
+  
+  .opensource-links {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .opensource-link {
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .opensource-license {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-us-page {
+    padding-top: 4.5rem;
+  }
+  
+  .page-content {
+    padding: 0 0.75rem;
+    padding-top: 1rem;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .intro-card,
+  .developer-card,
+  .info-card,
+  .contact-card {
+    padding: 1rem;
+  }
+  
+  .developer-avatar {
+    font-size: 2rem;
+  }
+  
+  .developer-name {
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,110 @@
+.popular-deals {
+  margin-bottom: 2rem;
+}
+
+.popular-deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.popular-deal-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.popular-deal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+}
+
+.popular-deal-header {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.rank-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.deal-type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.deal-title-truncate {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.popular-deal-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.popular-deal-info strong {
+  color: #00d4ff;
+  margin-right: 0.5rem;
+}
+
+.seller-button-mini {
+  background: none;
+  border: none;
+  color: #00d4ff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  padding: 0;
+  margin: 0;
+}
+
+.seller-button-mini:hover {
+  color: #00a8cc;
+}
+
+.popular-deal-actions {
+  margin-top: 1rem;
+}
+
+/* 애니메이션 */
+.popular-deal-card.animate-in {
+  animation: slideInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .popular-deals-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .popular-deal-card {
+    margin-bottom: 1rem;
+  }
+}
