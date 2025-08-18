@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from typing import List
 import crud
 import schemas
 from database import get_db, create_tables
-from models import User
+from models import User, EmailVerification
+from auth_utils import create_verification_token, verify_verification_token, create_access_token
 
 app = FastAPI(title="Black Market API", version="1.0.0")
 
@@ -32,27 +34,21 @@ def read_root():
 @app.post("/auth/request-verification", response_model=schemas.EmailVerificationResponse)
 def request_email_verification(request: schemas.EmailVerificationRequest, db: Session = Depends(get_db)):
     """이메일 인증 요청"""
-    # 이메일과 사용자명이 모두 중복되는 경우에만 에러 발생
+    # 이메일 중복 확인
     existing_user = crud.get_user_by_email(db, email=request.email)
-    existing_username = crud.get_user_by_username(db, username=request.username)
-    if existing_user and existing_username:
-        raise HTTPException(status_code=400, detail="이미 등록된 이메일과 사용자명입니다")
     
-    # 비밀번호 해싱
-    password_hash = crud.get_password_hash(request.password)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="이미 등록된 이메일입니다")
     
     # 인증 코드 생성
     from email_service import email_service
     verification_code = email_service.generate_verification_code()
     expires_at = email_service.get_expiry_time(10)  # 10분 후 만료
     
-    # 이메일 인증 요청 저장
+    # 이메일 인증 요청 저장 (이메일만)
     crud.create_email_verification(
         db=db,
         email=request.email,
-        username=request.username,
-        password_hash=password_hash,
-        profile_image_url=request.profile_image_url,
         verification_code=verification_code,
         expires_at=expires_at
     )
@@ -60,7 +56,7 @@ def request_email_verification(request: schemas.EmailVerificationRequest, db: Se
     # 이메일 전송
     email_sent = email_service.send_verification_email(
         to_email=request.email,
-        username=request.username,
+        username="사용자",  # 임시 이름
         verification_code=verification_code
     )
     
@@ -72,9 +68,9 @@ def request_email_verification(request: schemas.EmailVerificationRequest, db: Se
         email=request.email
     )
 
-@app.post("/auth/verify-email", response_model=schemas.User)
+@app.post("/auth/verify-email", response_model=schemas.EmailVerificationSuccess)
 def verify_email(request: schemas.EmailVerificationConfirm, db: Session = Depends(get_db)):
-    """이메일 인증 확인 및 회원가입 완료"""
+    """이메일 인증 코드 확인"""
     # 인증 코드 확인
     verification = crud.get_email_verification(
         db=db,
@@ -91,29 +87,81 @@ def verify_email(request: schemas.EmailVerificationConfirm, db: Session = Depend
     # 인증 완료 처리
     crud.verify_email_verification(db=db, verification_id=verification.verification_id)
     
-    # 사용자 생성
-    user_data = schemas.UserCreate(
-        username=verification.username,
-        email=verification.email,
-        password=verification.password_hash,  # 이미 해싱된 비밀번호
-        profile_image_url=verification.profile_image_url
+    # JWT 토큰 생성
+    verification_token = create_verification_token(
+        verification_id=verification.verification_id,
+        email=request.email
     )
     
-    # 직접 사용자 생성 (비밀번호는 이미 해싱됨)
+    return schemas.EmailVerificationSuccess(
+        message="이메일 인증이 완료되었습니다. 닉네임과 비밀번호를 설정해주세요.",
+        email=request.email,
+        verification_token=verification_token
+    )
+
+@app.post("/auth/setup-user", response_model=schemas.UserSetupResponse)
+def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db)):
+    """이메일 인증 완료 후 사용자 정보 설정 및 회원가입 완료"""
+    # JWT 토큰 검증
+    payload = verify_verification_token(request.verification_token)
+    verification_id = payload.get("verification_id")
+    token_email = payload.get("email")
+    
+    # 토큰의 이메일과 요청의 이메일이 일치하는지 확인
+    if token_email != request.email:
+        raise HTTPException(status_code=400, detail="토큰과 이메일이 일치하지 않습니다")
+    
+    # 인증 정보 확인
+    verification = db.query(EmailVerification).filter(
+        and_(
+            EmailVerification.verification_id == verification_id,
+            EmailVerification.email == request.email,
+            EmailVerification.is_verified == True
+        )
+    ).first()
+    
+    if not verification:
+        raise HTTPException(status_code=400, detail="유효하지 않은 인증 정보입니다")
+    
+    # 이미 사용자가 생성되었는지 확인
+    existing_user = crud.get_user_by_email(db, email=request.email)
+    if existing_user:
+        raise HTTPException(status_code=400, detail="이미 회원가입이 완료된 이메일입니다")
+    
+    # 닉네임 중복 확인
+    existing_username = crud.get_user_by_username(db, username=request.username)
+    if existing_username:
+        raise HTTPException(status_code=400, detail="이미 사용 중인 닉네임입니다")
+    
+    # 사용자 생성
     db_user = User(
-        username=verification.username,
-        email=verification.email,
-        password_hash=verification.password_hash,
-        profile_image_url=verification.profile_image_url
+        username=request.username,
+        email=request.email,
+        password_hash=crud.get_password_hash(request.password),
+        profile_image_url=request.profile_image_url
     )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     
+    # 액세스 토큰 생성
+    access_token = create_access_token(
+        user_id=db_user.user_id,
+        email=db_user.email
+    )
+    
+    # 사용된 인증 정보 삭제
+    db.delete(verification)
+    db.commit()
+    
     # 만료된 인증 요청 정리
     crud.cleanup_expired_verifications(db)
     
-    return db_user
+    return schemas.UserSetupResponse(
+        user=db_user,
+        access_token=access_token,
+        token_type="bearer"
+    )
 
 # User endpoints
 @app.post("/users/", response_model=schemas.User)

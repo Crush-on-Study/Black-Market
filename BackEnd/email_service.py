@@ -46,7 +46,7 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>🚀 Black Market</h1>
+                        <h1> Black Market</h1>
                         <p>회원가입을 위한 이메일 인증</p>
                     </div>
                     <div class="content">

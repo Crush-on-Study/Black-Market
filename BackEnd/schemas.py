@@ -138,10 +138,7 @@ class UserAchievement(UserAchievementBase):
 
 # Email Verification Schemas
 class EmailVerificationRequest(BaseModel):
-    username: str
     email: EmailStr
-    password: str
-    profile_image_url: Optional[str] = None
 
 class EmailVerificationConfirm(BaseModel):
     email: EmailStr
@@ -150,3 +147,21 @@ class EmailVerificationConfirm(BaseModel):
 class EmailVerificationResponse(BaseModel):
     message: str
     email: str
+
+class EmailVerificationSuccess(BaseModel):
+    message: str
+    email: str
+    verification_token: str  # 임시 토큰
+
+# User Setup Schemas (이메일 인증 후 사용자 정보 설정)
+class UserSetupRequest(BaseModel):
+    email: EmailStr
+    verification_token: str
+    username: str
+    password: str
+    profile_image_url: Optional[str] = None
+
+class UserSetupResponse(BaseModel):
+    user: User
+    access_token: str
+    token_type: str = "bearer"
