@@ -14,6 +14,8 @@ function SignupModal({ isOpen, onClose }) {
     email: '',
     name: '',
     nickname: '',
+    password: '',
+    confirmPassword: '',
     verificationCode: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +23,9 @@ function SignupModal({ isOpen, onClose }) {
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [isCheckingNickname, setIsCheckingNickname] = useState(false);
   const [nicknameStatus, setNicknameStatus] = useState(''); // 'available', 'taken', ''
+  const [passwordStrength, setPasswordStrength] = useState(''); // 'weak', 'medium', 'strong'
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -33,13 +38,64 @@ function SignupModal({ isOpen, onClose }) {
         email: '',
         name: '',
         nickname: '',
+        password: '',
+        confirmPassword: '',
         verificationCode: ''
       });
       setError('');
       setIsLoading(false);
       setIsVerificationSent(false);
+      setPasswordStrength('');
+      setShowPassword(false);
+      setShowConfirmPassword(false);
     }
   }, [isOpen]);
+
+  // 비밀번호 강도 검증 함수
+  const validatePasswordStrength = useCallback((password) => {
+    if (!password) return '';
+    
+    // 기본 조건: 영문+숫자 포함 6자 이상
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const isLongEnough = password.length >= 6;
+    
+    if (!hasLetter || !hasNumber || !isLongEnough) {
+      return 'weak';
+    }
+    
+    // 연속성 체크 (abcd, 123 등)
+    const hasSequential = /(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(password);
+    
+    // 같은 숫자 3개 이상 체크
+    const hasRepeating = /(\d)\1{2,}/.test(password);
+    
+    if (hasSequential || hasRepeating) {
+      return 'weak';
+    }
+    
+    // 추가 보안 점수 계산
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    
+    if (score >= 4) return 'strong';
+    if (score >= 2) return 'medium';
+    return 'weak';
+  }, []);
+
+  // 비밀번호 변경 시 강도 업데이트
+  useEffect(() => {
+    if (formData.password) {
+      const strength = validatePasswordStrength(formData.password);
+      setPasswordStrength(strength);
+    } else {
+      setPasswordStrength('');
+    }
+  }, [formData.password, validatePasswordStrength]);
 
   // 회사 목록 (icon 필드와 도메인 추가)
   const companies = [
@@ -52,7 +108,7 @@ function SignupModal({ isOpen, onClose }) {
   const steps = [
     { id: 1, title: '회사 선택', description: '소속 회사를 선택해주세요' },
     { id: 2, title: '기본 정보', description: '이름과 회사이메일계정을 입력해주세요' },
-    { id: 3, title: '닉네임 설정', description: '사용할 닉네임을 입력해주세요' },
+    { id: 3, title: '닉네임 & 비밀번호', description: '닉네임과 비밀번호를 설정해주세요' },
     { id: 4, title: '이메일 인증', description: '인증코드를 입력해주세요' },
     { id: 5, title: '가입 완료', description: '회원가입이 완료되었습니다' }
   ];
@@ -103,11 +159,34 @@ function SignupModal({ isOpen, onClose }) {
       
       setCurrentStep(3);
     } else if (currentStep === 3) {
-      // 닉네임 중복 검사
+      // 닉네임과 비밀번호 검증
       if (!formData.nickname) {
         setError('닉네임을 입력해주세요.');
         return;
       }
+      
+      if (!formData.password) {
+        setError('비밀번호를 입력해주세요.');
+        return;
+      }
+      
+      if (!formData.confirmPassword) {
+        setError('비밀번호 확인을 입력해주세요.');
+        return;
+      }
+      
+      if (formData.password !== formData.confirmPassword) {
+        setError('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+        return;
+      }
+      
+      // 비밀번호 강도 검증
+      const strength = validatePasswordStrength(formData.password);
+      if (strength === 'weak') {
+        setError('비밀번호가 너무 약합니다. 영문+숫자 포함 6자 이상으로 설정해주세요.');
+        return;
+      }
+      
       setIsCheckingNickname(true);
       // 임시로 2초 대기 (실제로는 백엔드 API 호출)
       setTimeout(() => {
@@ -119,9 +198,9 @@ function SignupModal({ isOpen, onClose }) {
         } else {
           setNicknameStatus('available');
           setError('');
+          setCurrentStep(4);
         }
       }, 2000);
-      setCurrentStep(4);
     } else if (currentStep === 4) {
       // 인증코드 검증
       if (!formData.verificationCode) {
@@ -135,7 +214,7 @@ function SignupModal({ isOpen, onClose }) {
       }
       setCurrentStep(5);
     }
-  }, [currentStep, formData, companies]);
+  }, [currentStep, formData, companies, validatePasswordStrength]);
 
   const handlePrev = useCallback(() => {
     if (currentStep > 1) {
@@ -177,11 +256,16 @@ function SignupModal({ isOpen, onClose }) {
       email: '',
       name: '',
       nickname: '',
+      password: '',
+      confirmPassword: '',
       verificationCode: ''
     });
     setError('');
     setIsLoading(false);
     setIsVerificationSent(false);
+    setPasswordStrength('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     onClose();
   }, [onClose]);
 
@@ -211,13 +295,64 @@ function SignupModal({ isOpen, onClose }) {
       email: '',
       name: '',
       nickname: '',
+      password: '',
+      confirmPassword: '',
       verificationCode: ''
     });
     setError('');
     setIsLoading(false);
     setIsVerificationSent(false);
+    setPasswordStrength('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     onClose();
   }, [onClose]);
+
+  // 비밀번호 표시/숨김 토글
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
+  const toggleConfirmPasswordVisibility = useCallback(() => {
+    setShowConfirmPassword(prev => !prev);
+  }, []);
+
+  // 비밀번호 강도 표시 컴포넌트
+  const PasswordStrengthIndicator = ({ strength }) => {
+    if (!strength) return null;
+    
+    const getStrengthText = () => {
+      switch (strength) {
+        case 'weak': return '위험';
+        case 'medium': return '보통';
+        case 'strong': return '안전';
+        default: return '';
+      }
+    };
+    
+    const getStrengthColor = () => {
+      switch (strength) {
+        case 'weak': return '#ff4444';
+        case 'medium': return '#ffaa00';
+        case 'strong': return '#00aa00';
+        default: return '#ccc';
+      }
+    };
+    
+    return (
+      <div className="password-strength-indicator">
+        <div className="strength-bar">
+          <div 
+            className={`strength-fill strength-${strength}`}
+            style={{ width: strength === 'weak' ? '33%' : strength === 'medium' ? '66%' : '100%' }}
+          ></div>
+        </div>
+        <span className="strength-text" style={{ color: getStrengthColor() }}>
+          {getStrengthText()}
+        </span>
+      </div>
+    );
+  };
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -261,24 +396,28 @@ function SignupModal({ isOpen, onClose }) {
             </p>
             
             <div className="form-grid">
-              <Input
-                label="이름"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="실명을 입력해주세요"
-                required
-              />
+              <div className="input-group">
+                <label className="input-label">이름</label>
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="실명을 입력해주세요"
+                  required
+                />
+              </div>
               
-              <Input
-                label="회사이메일계정"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="회사 이메일을 입력해주세요"
-                required
-              />
+              <div className="input-group">
+                <label className="input-label">회사이메일계정</label>
+                <Input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="회사 이메일을 입력해주세요"
+                  required
+                />
+              </div>
             </div>
           </div>
         );
@@ -286,21 +425,23 @@ function SignupModal({ isOpen, onClose }) {
       case 3:
         return (
           <div className="step-content">
-            <h2>닉네임을 설정해주세요</h2>
+            <h2>닉네임과 비밀번호를 설정해주세요</h2>
             <p className="step-description">
-              사용하실 닉네임을 입력해주세요. 닉네임은 변경이 불가합니다.
+              사용하실 닉네임과 비밀번호를 설정해주세요. 닉네임은 변경이 불가합니다.
             </p>
             
             <div className="form-grid">
-              <Input
-                label="닉네임"
-                name="nickname"
-                value={formData.nickname}
-                onChange={handleChange}
-                placeholder="예: BlackMarketUser"
-                required
-                disabled={isCheckingNickname}
-              />
+              <div className="input-group">
+                <label className="input-label">닉네임</label>
+                <Input
+                  name="nickname"
+                  value={formData.nickname}
+                  onChange={handleChange}
+                  placeholder="예: BlackMarketUser"
+                  required
+                  disabled={isCheckingNickname}
+                />
+              </div>
               {isCheckingNickname && (
                 <p className="nickname-status">닉네임 중복 검사 중...</p>
               )}
@@ -310,6 +451,76 @@ function SignupModal({ isOpen, onClose }) {
               {nicknameStatus === 'taken' && (
                 <p className="nickname-status error">이미 사용 중인 닉네임입니다.</p>
               )}
+              
+              <div className="password-input-group">
+                <label className="input-label">비밀번호</label>
+                <div className="password-input-container">
+                  <Input
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="영문+숫자 포함 6자 이상"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-button"
+                    onClick={togglePasswordVisibility}
+                    aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+                <PasswordStrengthIndicator strength={passwordStrength} />
+                <div className="password-requirements">
+                  <p className="requirement-title">비밀번호 요구사항:</p>
+                  <ul className="requirement-list">
+                    <li className={formData.password.length >= 6 ? 'met' : 'unmet'}>
+                      ✓ 최소 6자 이상
+                    </li>
+                    <li className={/[a-zA-Z]/.test(formData.password) ? 'met' : 'unmet'}>
+                      ✓ 영문 포함
+                    </li>
+                    <li className={/\d/.test(formData.password) ? 'met' : 'unmet'}>
+                      ✓ 숫자 포함
+                    </li>
+                    <li className={!/(\d)\1{2,}/.test(formData.password) ? 'met' : 'unmet'}>
+                      ✓ 같은 숫자 3개 이상 연속 금지
+                    </li>
+                    <li className={!/(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(formData.password) ? 'met' : 'unmet'}>
+                      ✓ 연속된 문자/숫자 금지 (abcd, 123 등)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="password-input-group">
+                <label className="input-label">비밀번호 확인</label>
+                <div className="password-input-container">
+                  <Input
+                    name="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="비밀번호를 다시 입력해주세요"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    aria-label={showConfirmPassword ? '비밀번호 확인 숨기기' : '비밀번호 확인 보기'}
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
+                {formData.confirmPassword && (
+                  <div className={`password-match ${formData.password === formData.confirmPassword ? 'match' : 'mismatch'}`}>
+                    {formData.password === formData.confirmPassword ? '✓ 비밀번호가 일치합니다' : '✗ 비밀번호가 일치하지 않습니다'}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         );
@@ -333,14 +544,16 @@ function SignupModal({ isOpen, onClose }) {
             
             <div className="form-grid">
               <div className="verification-input-group">
-                <Input
-                  label="인증코드"
-                  name="verificationCode"
-                  value={formData.verificationCode}
-                  onChange={handleChange}
-                  placeholder="6자리 인증코드를 입력해주세요"
-                  required
-                />
+                <div className="input-group">
+                  <label className="input-label">인증코드</label>
+                  <Input
+                    name="verificationCode"
+                    value={formData.verificationCode}
+                    onChange={handleChange}
+                    placeholder="6자리 인증코드를 입력해주세요"
+                    required
+                  />
+                </div>
                 <div className="verification-actions">
                   {!isVerificationSent ? (
                     <Button
@@ -449,9 +662,9 @@ function SignupModal({ isOpen, onClose }) {
                 variant="primary"
                 size="large"
                 onClick={handleNext}
-                disabled={isLoading}
+                disabled={isLoading || !formData.nickname || !formData.password || !formData.confirmPassword}
               >
-                닉네임 설정
+                다음
               </Button>
             )}
 

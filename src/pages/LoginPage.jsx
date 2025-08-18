@@ -254,9 +254,12 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
+      // 실제 백엔드 API 호출 시뮬레이션
+      // 실제로는 여기서 서버에 로그인 요청을 보냄
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // 테스트 계정으로 로그인 시도
       if (formData.email === 'test1@ekmtc.com' && formData.password === 'test1') {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
         recordLoginAttempt(true);
         
         const now = new Date();
@@ -281,11 +284,58 @@ function LoginPage() {
           } 
         });
       } else {
+        // 로그인 실패 처리
         recordLoginAttempt(false);
-        throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
+        
+        // 이메일 존재 여부 확인 (실제로는 백엔드에서 확인)
+        const emailExists = formData.email === 'test1@ekmtc.com';
+        
+        if (!emailExists) {
+          // 존재하지 않는 이메일
+          setErrors({ 
+            email: '등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.',
+            general: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.'
+          });
+          
+          // 이메일 입력 필드로 포커스 이동
+          setTimeout(() => {
+            const emailInput = document.querySelector('input[name="email"]');
+            if (emailInput) {
+              emailInput.focus();
+              emailInput.select();
+            }
+          }, 100);
+        } else {
+          // 이메일은 존재하지만 비밀번호가 틀림
+          setErrors({ 
+            password: '비밀번호가 올바르지 않습니다.',
+            general: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.'
+          });
+          
+          // 비밀번호 입력 필드로 포커스 이동
+          setTimeout(() => {
+            const passwordInput = document.querySelector('input[name="password"]');
+            if (passwordInput) {
+              passwordInput.focus();
+              passwordInput.select();
+            }
+          }, 100);
+        }
+        
+        // 에러 메시지 표시 후 5초 뒤 자동으로 사라지게 설정
+        setTimeout(() => {
+          setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.general;
+            return newErrors;
+          });
+        }, 5000);
       }
     } catch (error) {
-      setErrors({ general: error.message });
+      // 네트워크 오류 등 예상치 못한 오류
+      setErrors({ 
+        general: '서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.' 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -404,40 +454,54 @@ function LoginPage() {
               )}
 
               <form onSubmit={handleSubmit} className="login-form" noValidate>
-                {/* 이메일 입력 단계 */}
-                <div className={`form-step ${currentStep === 'email' ? 'active' : ''}`}>
-                  <div className="input-group">
-                    <label className="input-label">
-                      <span className="label-icon">📧</span>
-                      회사 이메일
-                    </label>
-                    <Input
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="회사 이메일을 입력하세요"
-                      required
-                      error={errors.email}
-                      autoComplete="email"
-                      autoFocus
-                      disabled={isLocked}
-                      className="modern-input"
-                    />
-                  </div>
-                  
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="large"
-                    fullWidth
-                    onClick={handleEmailComplete}
-                    disabled={!formData.email.trim() || isLocked}
-                    className="next-step-button"
-                  >
-                    다음 단계
-                  </Button>
-                </div>
+                                 {/* 이메일 입력 단계 */}
+                 <div className={`form-step ${currentStep === 'email' ? 'active' : ''}`}>
+                   <div className="input-group">
+                     <label className="input-label">
+                       <span className="label-icon">📧</span>
+                       회사 이메일
+                     </label>
+                     <Input
+                       name="email"
+                       type="email"
+                       value={formData.email}
+                       onChange={handleChange}
+                       onKeyDown={(e) => {
+                         if (e.key === 'Enter') {
+                           e.preventDefault();
+                           handleEmailComplete();
+                         }
+                       }}
+                       placeholder="회사 이메일을 입력하세요"
+                       required
+                       error={errors.email}
+                       autoComplete="email"
+                       autoFocus
+                       disabled={isLocked}
+                       className="modern-input"
+                     />
+                   </div>
+                   
+                                        {/* 이메일 단계 에러 메시지 */}
+                     {errors.email && (
+                       <div className="error-message step-error">
+                         <span className="error-icon">📧</span>
+                         <span className="error-text">{errors.email}</span>
+                       </div>
+                     )}
+                   
+                   <Button
+                     type="button"
+                     variant="primary"
+                     size="large"
+                     fullWidth
+                     onClick={handleEmailComplete}
+                     disabled={!formData.email.trim() || isLocked}
+                     className="next-step-button"
+                   >
+                     다음 단계
+                   </Button>
+                 </div>
 
                 {/* 비밀번호 입력 단계 */}
                 {showPasswordField && (
@@ -453,6 +517,12 @@ function LoginPage() {
                           type={showPassword ? 'text' : 'password'}
                           value={formData.password}
                           onChange={handleChange}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handlePasswordComplete();
+                            }
+                          }}
                           placeholder="비밀번호를 입력하세요"
                           required
                           error={errors.password}
@@ -472,19 +542,28 @@ function LoginPage() {
                       </div>
                     </div>
                     
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="large"
-                      fullWidth
-                      onClick={handlePasswordComplete}
-                      disabled={!formData.password.trim() || isLocked}
-                      className="next-step-button"
-                    >
-                      다음 단계
-                    </Button>
-                  </div>
-                )}
+                                         
+                     {/* 비밀번호 단계 에러 메시지 */}
+                     {errors.password && (
+                       <div className="error-message step-error">
+                         <span className="error-icon">🔐</span>
+                         <span className="error-text">{errors.password}</span>
+                       </div>
+                     )}
+                     
+                     <Button
+                       type="button"
+                       variant="primary"
+                       size="large"
+                       fullWidth
+                       onClick={handlePasswordComplete}
+                       disabled={!formData.password.trim() || isLocked}
+                       className="next-step-button"
+                     >
+                       다음 단계
+                     </Button>
+                   </div>
+                 )}
 
                 {/* 추가 옵션 단계 */}
                 {showRememberMe && (
@@ -503,12 +582,33 @@ function LoginPage() {
                       </label>
                     </div>
 
-                    {errors.general && (
-                      <div className="error-message general-error">
-                        <span className="error-icon">❌</span>
-                        {errors.general}
-                      </div>
-                    )}
+                                         {errors.general && (
+                       <div className="error-message general-error">
+                         <span className="error-icon">❌</span>
+                         {errors.general}
+                         
+                         {/* 로그인 실패 도움말 */}
+                         <div className="login-help">
+                           <p className="help-title">💡 로그인에 문제가 있나요?</p>
+                           <div className="help-options">
+                             <button 
+                               type="button"
+                               className="help-link"
+                               onClick={openSignupModal}
+                             >
+                               📝 회원가입하기
+                             </button>
+                             <button 
+                               type="button"
+                               className="help-link"
+                               onClick={handleForgotPassword}
+                             >
+                               🔑 비밀번호 찾기
+                             </button>
+                           </div>
+                         </div>
+                       </div>
+                     )}
 
                     <Button
                       type="submit"
