@@ -86,6 +86,33 @@ npm run build
 npm test
 ```
 
+### 🐳 Docker로 실행하기
+
+Docker를 사용하여 전체 애플리케이션 스택(Frontend, Backend, Database)을 한 번에 실행할 수 있습니다.
+
+#### 필수 요구사항
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+#### 실행 방법
+
+1.  프로젝트 루트 디렉토리에서 아래 명령어를 실행합니다.
+    ```bash
+    docker-compose up -d --build
+    ```
+    - `-d` 플래그는 컨테이너를 백그라운드에서 실행합니다.
+    - `--build` 플래그는 이미지를 빌드하거나 재빌드합니다.
+
+2.  애플리케이션 접속
+    - **Frontend**: [http://localhost:5173](http://localhost:5173)
+    - **Backend API**: [http://localhost:8000/docs](http://localhost:8000/docs)
+    - **pgAdmin** (DB 관리 도구): [http://localhost:5050](http://localhost:5050)
+
+#### 종료 방법
+```bash
+docker-compose down
+```
+
 ## 📁 프로젝트 구조
 
 ```
