@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Black Market API Lambda Function
+
+Conditions:
+  HasVpcConfig: !Not [!Equals [!Join ["", !Ref SubnetIds], ""]]
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: PostgreSQL database connection URL (e.g., postgresql://user:pass@host:5432/db)
+    NoEcho: true
+  SecretKey:
+    Type: String
+    Description: JWT secret key
+    NoEcho: true
+  SmtpServer:
+    Type: String
+    Default: smtp.gmail.com
+  SmtpPort:
+    Type: Number
+    Default: 587
+  SmtpUsername:
+    Type: String
+    Description: SMTP username for email service
+  SmtpPassword:
+    Type: String
+    Description: SMTP password for email service
+    NoEcho: true
+  FromEmail:
+    Type: String
+    Description: From email address
+  VpcSecurityGroupIds:
+    Type: CommaDelimitedList
+    Description: Security Group IDs for Lambda function (optional)
+    Default: ""
+  SubnetIds:
+    Type: CommaDelimitedList
+    Description: Subnet IDs for Lambda function (required for RDS access)
+    Default: ""
+
+Resources:
+  BlackMarketApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: black-market-api
+      PackageType: Image
+      ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/black-market-api:latest"
+      Timeout: 30
+      MemorySize: 512
+      # VPC 설정 (RDS 연결을 위해 필요)
+      VpcConfig: !If
+        - HasVpcConfig
+        - SecurityGroupIds: !Ref VpcSecurityGroupIds
+          SubnetIds: !Ref SubnetIds
+        - !Ref "AWS::NoValue"
+      Environment:
+        Variables:
+          DATABASE_URL: !Ref DatabaseUrl
+          SECRET_KEY: !Ref SecretKey
+          ALGORITHM: HS256
+          ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+          SMTP_SERVER: !Ref SmtpServer
+          SMTP_PORT: !Ref SmtpPort
+          SMTP_USERNAME: !Ref SmtpUsername
+          SMTP_PASSWORD: !Ref SmtpPassword
+          FROM_EMAIL: !Ref FromEmail
+      Events:
+        ApiGateway:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref BlackMarketApi
+        ApiGatewayRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId: !Ref BlackMarketApi
+
+  BlackMarketApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+        AllowCredentials: true
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${BlackMarketApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  
+  FunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref BlackMarketApiFunction
