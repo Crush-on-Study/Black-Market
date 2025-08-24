@@ -42,7 +42,6 @@ def request_email_verification(request: schemas.EmailVerificationRequest, db: Se
     # 이메일 전송
     email_sent = email_service.send_verification_email(
         to_email=request.email,
-        username="사용자",  # 임시 이름
         verification_code=verification_code
     )
     

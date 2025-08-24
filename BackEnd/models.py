@@ -118,9 +118,6 @@ class EmailVerification(Base):
     
     verification_id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(255), nullable=False)
-    username = Column(String(50), nullable=True)  # 나중에 설정 가능
-    password_hash = Column(String(255), nullable=True)  # 나중에 설정 가능
-    profile_image_url = Column(String(255), nullable=True)
     verification_code = Column(String(6), nullable=False)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     expires_at = Column(TIMESTAMP, nullable=False)
