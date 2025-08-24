@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import create_tables
+from database import initialize_database
 from routers import auth, users, listings, trades, chat, achievements
 
 app = FastAPI(
@@ -18,10 +18,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 앱 시작시 테이블 생성
+# 앱 시작시 데이터베이스 초기화 (테이블 생성 및 목업 데이터 로드)
 @app.on_event("startup")
 def startup_event():
-    create_tables()
+    initialize_database()
 
 # Health Check
 @app.get("/", tags=["Default"])
