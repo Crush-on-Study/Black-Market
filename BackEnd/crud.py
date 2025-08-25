@@ -29,6 +29,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100) -> List[User]:
 def create_user(db: Session, user: schemas.UserCreate) -> User:
     hashed_password = get_password_hash(user.password)
     db_user = User(
+        real_name=user.real_name,
         username=user.username,
         email=user.email,
         password_hash=hashed_password,
@@ -229,7 +230,7 @@ def create_user_achievement(db: Session, user_id: int, achievement_id: int) -> U
     return db_user_achievement
 
 # Email Verification CRUD
-def create_email_verification(db: Session, email: str, verification_code: str, username:str,expires_at) -> EmailVerification:
+def create_email_verification(db: Session, email: str, verification_code: str, real_name: str, expires_at) -> EmailVerification:
     # 기존 미인증 요청 삭제
     db.query(EmailVerification).filter(
         and_(EmailVerification.email == email, EmailVerification.is_verified == False)
@@ -237,9 +238,7 @@ def create_email_verification(db: Session, email: str, verification_code: str, u
     
     db_verification = EmailVerification(
         email=email,
-        username=username,  # 나중에 설정
-        password_hash="",  # 나중에 설정
-        profile_image_url=None,
+        real_name=real_name,
         verification_code=verification_code,
         expires_at=expires_at
     )
@@ -248,20 +247,22 @@ def create_email_verification(db: Session, email: str, verification_code: str, u
     db.refresh(db_verification)
     return db_verification
 
-def update_email_verification_with_user_data(db: Session, verification_id: int, username: str, 
-                                           password: str, profile_image_url: Optional[str] = None) -> Optional[EmailVerification]:
-    db_verification = db.query(EmailVerification).filter(
-        EmailVerification.verification_id == verification_id
-    ).first()
-    
-    if db_verification:
-        db_verification.username = username
-        db_verification.password_hash = get_password_hash(password)
-        db_verification.profile_image_url = profile_image_url
-        db.commit()
-        db.refresh(db_verification)
-    
-    return db_verification
+# 이 함수는 더 이상 사용되지 않습니다. username은 request-verification에서 받고, 
+# setup-user에서는 인증된 이메일에서 username을 가져옵니다.
+# def update_email_verification_with_user_data(db: Session, verification_id: int, username: str, 
+#                                            password: str, profile_image_url: Optional[str] = None) -> Optional[EmailVerification]:
+#     db_verification = db.query(EmailVerification).filter(
+#         EmailVerification.verification_id == verification_id
+#     ).first()
+#     
+#     if db_verification:
+#         db_verification.username = username
+#         db_verification.password_hash = get_password_hash(password)
+#         db_verification.profile_image_url = profile_image_url
+#         db.commit()
+#         db.refresh(db_verification)
+#     
+#     return db_verification
 
 def get_email_verification(db: Session, email: str, verification_code: str) -> Optional[EmailVerification]:
     return db.query(EmailVerification).filter(

@@ -26,6 +26,7 @@ def request_email_verification(request: schemas.EmailVerificationRequest, db: Se
     """
     이메일 인증을 요청합니다.
     - 이메일 중복을 확인합니다.
+    - 실명을 저장합니다.
     - 인증 코드를 생성하여 DB에 저장합니다.
     - 사용자에게 인증 코드가 포함된 이메일을 전송합니다.
     """
@@ -40,10 +41,11 @@ def request_email_verification(request: schemas.EmailVerificationRequest, db: Se
     verification_code = email_service.generate_verification_code()
     expires_at = email_service.get_expiry_time(10)  # 10분 후 만료
     
-    # 이메일 인증 요청 저장 (이메일만)
+    # 이메일 인증 요청 저장 (이메일과 실명)
     crud.create_email_verification(
         db=db,
         email=request.email,
+        real_name=request.real_name,
         verification_code=verification_code,
         expires_at=expires_at
     )
@@ -102,6 +104,7 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     """
     이메일 인증 완료 후 사용자 정보를 설정하여 회원가입을 완료합니다.
     - 인증 토큰을 검증합니다.
+    - 인증된 이메일에서 실명을 가져옵니다.
     - 닉네임 중복을 확인합니다.
     - 사용자 정보를 DB에 저장하고, 로그인에 사용할 액세스 토큰과 리프레시 토큰을 발급합니다.
     """
@@ -136,9 +139,13 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     if existing_username:
         raise HTTPException(status_code=400, detail="이미 사용 중인 닉네임입니다")
     
+    # 인증된 이메일에서 실명 가져오기
+    real_name = verification.real_name
+    
     # 사용자 생성
     db_user = User(
-        username=request.username,  # 요청에서 받은 사용자명 사용
+        real_name=real_name,  # 인증된 이메일에서 가져온 실명 사용
+        username=request.username,  # 요청에서 받은 닉네임 사용
         email=request.email,
         password_hash=crud.get_password_hash(request.password),
         profile_image_url=request.profile_image_url

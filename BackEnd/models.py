@@ -9,7 +9,8 @@ class User(Base):
     __tablename__ = "users"
     
     user_id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(50), unique=True, nullable=False)
+    real_name = Column(String(50), nullable=False)  # 실명
+    username = Column(String(50), unique=True, nullable=False)  # 닉네임
     email = Column(String(255), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     profile_image_url = Column(String(255), nullable=True)
@@ -118,7 +119,7 @@ class EmailVerification(Base):
     
     verification_id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(255), nullable=False)
-    username = Column(String(20), nullable=False)
+    real_name = Column(String(50), nullable=False)  # 실명
     verification_code = Column(String(6), nullable=False)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     expires_at = Column(TIMESTAMP, nullable=False)

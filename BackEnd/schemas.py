@@ -5,6 +5,7 @@ from decimal import Decimal
 
 # User Schemas
 class UserBase(BaseModel):
+    real_name: str
     username: str
     email: EmailStr
     profile_image_url: Optional[str] = None
@@ -13,6 +14,7 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(BaseModel):
+    real_name: Optional[str] = None
     username: Optional[str] = None
     email: Optional[EmailStr] = None
     profile_image_url: Optional[str] = None
@@ -139,6 +141,7 @@ class UserAchievement(UserAchievementBase):
 # Email Verification Schemas
 class EmailVerificationRequest(BaseModel):
     email: EmailStr
+    real_name: str  # 실명
 
 class EmailVerificationConfirm(BaseModel):
     email: EmailStr
@@ -157,7 +160,7 @@ class EmailVerificationSuccess(BaseModel):
 class UserSetupRequest(BaseModel):
     email: EmailStr
     verification_token: str
-    username: str
+    username: str  # 닉네임
     password: str
     profile_image_url: Optional[str] = None
 
