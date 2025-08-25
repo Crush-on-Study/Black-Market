@@ -129,12 +129,13 @@ def load_mock_data():
             for i, seller in enumerate(unique_sellers, 1):
                 user = User(
                     username=seller,
-                    email=f"{seller.lower().replace(' ', '').replace('거래자', '').replace('구매희망자', '').replace('대량구매자', '')}@mockdata.example.com",
+                    email=f"{seller.lower().replace(' ', '').replace('거래자', '').replace('구매희망자', '').replace('대량구매자', '')}{i}@mockdata.example.com",
                     password_hash="$2b$12$dummy_hash_for_mock_data",  # 실제로는 해시된 비밀번호 사용
                     points_balance=1000000,  # 기본 포인트
                     created_at=datetime.now() - timedelta(days=30)
                 )
                 db.add(user)
+
                 db.flush()  # ID 생성을 위해 flush
                 mock_users[seller] = user.user_id
             

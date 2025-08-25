@@ -1,4 +1,6 @@
 import jwt
+import hashlib
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict
 from fastapi import HTTPException
@@ -8,7 +10,8 @@ import os
 SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-this-in-production")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 VERIFICATION_TOKEN_EXPIRE_MINUTES = 30
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 기본 24시간
+ACCESS_TOKEN_EXPIRE_MINUTES = 20  # 20분
+REFRESH_TOKEN_EXPIRE_DAYS = 14  # 2주
 
 def create_verification_token(verification_id: int, email: str) -> str:
     """이메일 인증 완료 후 사용자 설정을 위한 임시 토큰 생성"""
@@ -49,6 +52,14 @@ def create_access_token(user_id: int, email: str, expire_minutes: Optional[int] 
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+def create_refresh_token() -> str:
+    """리프레시 토큰 생성 (랜덤 문자열)"""
+    return secrets.token_urlsafe(32)
+
+def hash_refresh_token(token: str) -> str:
+    """리프레시 토큰 해시화"""
+    return hashlib.sha256(token.encode()).hexdigest()
+
 def verify_access_token(token: str) -> Dict:
     """액세스 토큰 검증 및 페이로드 반환"""
     try:
@@ -60,6 +71,6 @@ def verify_access_token(token: str) -> Dict:
         
         return payload
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="토큰이 만료되었습니다. 다시 로그인해주세요")
+        raise HTTPException(status_code=401, detail="토큰이 만료되었습니다. 리프레시 토큰을 사용해주세요")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")

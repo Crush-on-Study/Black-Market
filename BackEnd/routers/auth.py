@@ -1,11 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from datetime import datetime, timedelta
 import crud
 import schemas
 from database import get_db
 from models import User, EmailVerification
-from auth_utils import create_verification_token, verify_verification_token, create_access_token
+from auth_utils import (
+    create_verification_token, 
+    verify_verification_token, 
+    create_access_token,
+    create_refresh_token,
+    hash_refresh_token,
+    REFRESH_TOKEN_EXPIRE_DAYS
+)
 
 router = APIRouter(
     prefix="/auth",
@@ -113,7 +121,7 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
             EmailVerification.is_verified == True
         )
     ).first()
-    
+
     if not verification:
         raise HTTPException(status_code=400, detail="유효하지 않은 인증 정보입니다")
     
@@ -127,9 +135,12 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     if existing_username:
         raise HTTPException(status_code=400, detail="이미 사용 중인 닉네임입니다")
     
+    
+
+
     # 사용자 생성
     db_user = User(
-        username=request.username,
+        username=request.username,  # 요청에서 받은 사용자명 사용
         email=request.email,
         password_hash=crud.get_password_hash(request.password),
         profile_image_url=request.profile_image_url
@@ -155,4 +166,44 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
         user=db_user,
         access_token=access_token,
         token_type="bearer"
+    )
+
+@router.post("/login", response_model=schemas.LoginResponse)
+def login(request: schemas.LoginRequest, db: Session = Depends(get_db)):
+    """
+    이메일과 비밀번호로 로그인합니다.
+    - 이메일로 사용자를 찾습니다.
+    - 비밀번호를 검증합니다.
+    - 로그인 성공 시 액세스 토큰을 발급합니다.
+    - 마지막 로그인 시간을 업데이트합니다.
+    """
+    # 이메일로 사용자 찾기
+    user = crud.get_user_by_email(db, email=request.email)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="이메일 또는 비밀번호가 올바르지 않습니다"
+        )
+    
+    # 비밀번호 검증
+    if not crud.verify_password(request.password, user.password_hash):
+        raise HTTPException(
+            status_code=401,
+            detail="이메일 또는 비밀번호가 올바르지 않습니다"
+        )
+    
+    # 마지막 로그인 시간 업데이트
+    crud.update_last_login(db, user_id=user.user_id)
+    
+    # 액세스 토큰 생성
+    access_token = create_access_token(
+        user_id=user.user_id,
+        email=user.email
+    )
+    
+    return schemas.LoginResponse(
+        user=user,
+        access_token=access_token,
+        token_type="bearer",
+        message="로그인 성공"
     )

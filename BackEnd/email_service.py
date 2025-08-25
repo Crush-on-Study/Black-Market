@@ -21,7 +21,7 @@ class EmailService:
         """6자리 인증 코드 생성"""
         return ''.join(random.choices(string.digits, k=length))
     
-    def send_verification_email(self, to_email: str, verification_code: str):
+    def send_verification_email(self, to_email: str, verification_code: str, username:str):
         """이메일 인증 코드 전송"""
         try:
             # 이메일 내용 구성
@@ -50,7 +50,7 @@ class EmailService:
                         <p>회원가입을 위한 이메일 인증</p>
                     </div>
                     <div class="content">
-                        <h2>안녕하세요!</h2>
+                        <h2>안녕하세요! {username}님!</h2>
                         <p>Black Market 회원가입을 위한 이메일 인증 코드입니다.</p>
                         
                         <div class="verification-code">

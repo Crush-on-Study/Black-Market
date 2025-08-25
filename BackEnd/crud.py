@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func
-from models import User, Listing, Trade, ChatRoom, ChatParticipant, ChatMessage, Achievement, UserAchievement, EmailVerification
+from models import User, Listing, Trade, ChatRoom, ChatParticipant, ChatMessage, Achievement, UserAchievement, EmailVerification, RefreshToken
 import schemas
 from passlib.context import CryptContext
 from typing import List, Optional
@@ -56,6 +56,16 @@ def delete_user(db: Session, user_id: int) -> bool:
         db.commit()
         return True
     return False
+
+def update_last_login(db: Session, user_id: int) -> Optional[User]:
+    """사용자의 마지막 로그인 시간을 현재 시간으로 업데이트"""
+    db_user = get_user(db, user_id)
+    if db_user:
+        from datetime import datetime
+        db_user.last_login_at = datetime.utcnow()
+        db.commit()
+        db.refresh(db_user)
+    return db_user
 
 # Listing CRUD
 def get_listing(db: Session, listing_id: int) -> Optional[Listing]:
@@ -151,6 +161,9 @@ def create_chat_room(db: Session, participant_ids: List[int]) -> ChatRoom:
     return db_room
 
 # Chat Message CRUD
+def get_chat_message(db: Session, message_id: int) -> Optional[ChatMessage]:
+    return db.query(ChatMessage).filter(ChatMessage.message_id == message_id).first()
+
 def get_chat_messages(db: Session, room_id: int, skip: int = 0, limit: int = 50) -> List[ChatMessage]:
     return db.query(ChatMessage).filter(
         ChatMessage.room_id == room_id
@@ -216,7 +229,7 @@ def create_user_achievement(db: Session, user_id: int, achievement_id: int) -> U
     return db_user_achievement
 
 # Email Verification CRUD
-def create_email_verification(db: Session, email: str, verification_code: str, expires_at) -> EmailVerification:
+def create_email_verification(db: Session, email: str, verification_code: str, username:str,expires_at) -> EmailVerification:
     # 기존 미인증 요청 삭제
     db.query(EmailVerification).filter(
         and_(EmailVerification.email == email, EmailVerification.is_verified == False)
@@ -224,7 +237,7 @@ def create_email_verification(db: Session, email: str, verification_code: str, e
     
     db_verification = EmailVerification(
         email=email,
-        username="",  # 나중에 설정
+        username=username,  # 나중에 설정
         password_hash="",  # 나중에 설정
         profile_image_url=None,
         verification_code=verification_code,
@@ -275,5 +288,52 @@ def cleanup_expired_verifications(db: Session):
     """만료된 인증 요청 정리"""
     db.query(EmailVerification).filter(
         EmailVerification.expires_at < func.now()
+    ).delete()
+    db.commit()
+
+# Refresh Token CRUD
+def create_refresh_token(db: Session, user_id: int, token_hash: str, expires_at) -> RefreshToken:
+    """새로운 리프레시 토큰 생성"""
+    db_refresh_token = RefreshToken(
+        user_id=user_id,
+        token_hash=token_hash,
+        expires_at=expires_at
+    )
+    db.add(db_refresh_token)
+    db.commit()
+    db.refresh(db_refresh_token)
+    return db_refresh_token
+
+def get_refresh_token(db: Session, token_hash: str) -> Optional[RefreshToken]:
+    """리프레시 토큰 조회"""
+    return db.query(RefreshToken).filter(
+        and_(
+            RefreshToken.token_hash == token_hash,
+            RefreshToken.is_revoked == False,
+            RefreshToken.expires_at > func.now()
+        )
+    ).first()
+
+def revoke_refresh_token(db: Session, token_hash: str) -> bool:
+    """리프레시 토큰 무효화"""
+    db_token = db.query(RefreshToken).filter(RefreshToken.token_hash == token_hash).first()
+    if db_token:
+        db_token.is_revoked = True
+        db.commit()
+        return True
+    return False
+
+def revoke_all_user_refresh_tokens(db: Session, user_id: int) -> int:
+    """사용자의 모든 리프레시 토큰 무효화"""
+    count = db.query(RefreshToken).filter(
+        and_(RefreshToken.user_id == user_id, RefreshToken.is_revoked == False)
+    ).update({"is_revoked": True})
+    db.commit()
+    return count
+
+def cleanup_expired_refresh_tokens(db: Session):
+    """만료된 리프레시 토큰 정리"""
+    db.query(RefreshToken).filter(
+        RefreshToken.expires_at < func.now()
     ).delete()
     db.commit()

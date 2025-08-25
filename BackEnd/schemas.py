@@ -164,4 +164,26 @@ class UserSetupRequest(BaseModel):
 class UserSetupResponse(BaseModel):
     user: User
     access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+# Login Schemas
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class LoginResponse(BaseModel):
+    user: User
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    message: str = "로그인 성공"
+
+# Refresh Token Schemas
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
     token_type: str = "bearer"

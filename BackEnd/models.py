@@ -118,7 +118,21 @@ class EmailVerification(Base):
     
     verification_id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(255), nullable=False)
+    username = Column(String(20), nullable=False)
     verification_code = Column(String(6), nullable=False)
     created_at = Column(TIMESTAMP, default=func.current_timestamp())
     expires_at = Column(TIMESTAMP, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+    
+    token_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    token_hash = Column(String(255), nullable=False, unique=True)
+    created_at = Column(TIMESTAMP, default=func.current_timestamp())
+    expires_at = Column(TIMESTAMP, nullable=False)
+    is_revoked = Column(Boolean, default=False, nullable=False)
+    
+    # Relationships
+    user = relationship("User")
