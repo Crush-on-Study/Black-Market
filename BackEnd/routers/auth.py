@@ -14,6 +14,7 @@ from auth_utils import (
     hash_refresh_token,
     REFRESH_TOKEN_EXPIRE_DAYS
 )
+from auth_dependencies import get_current_user
 
 router = APIRouter(
     prefix="/auth",
@@ -102,7 +103,7 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     이메일 인증 완료 후 사용자 정보를 설정하여 회원가입을 완료합니다.
     - 인증 토큰을 검증합니다.
     - 닉네임 중복을 확인합니다.
-    - 사용자 정보를 DB에 저장하고, 로그인에 사용할 액세스 토큰을 발급합니다.
+    - 사용자 정보를 DB에 저장하고, 로그인에 사용할 액세스 토큰과 리프레시 토큰을 발급합니다.
     """
     # JWT 토큰 검증
     payload = verify_verification_token(request.verification_token)
@@ -135,9 +136,6 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     if existing_username:
         raise HTTPException(status_code=400, detail="이미 사용 중인 닉네임입니다")
     
-    
-
-
     # 사용자 생성
     db_user = User(
         username=request.username,  # 요청에서 받은 사용자명 사용
@@ -155,6 +153,18 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
         email=db_user.email
     )
     
+    # 리프레시 토큰 생성 및 저장
+    refresh_token = create_refresh_token()
+    refresh_token_hash = hash_refresh_token(refresh_token)
+    expires_at = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    
+    crud.create_refresh_token(
+        db=db,
+        user_id=db_user.user_id,
+        token_hash=refresh_token_hash,
+        expires_at=expires_at
+    )
+    
     # 사용된 인증 정보 삭제
     db.delete(verification)
     db.commit()
@@ -165,6 +175,7 @@ def setup_user(request: schemas.UserSetupRequest, db: Session = Depends(get_db))
     return schemas.UserSetupResponse(
         user=db_user,
         access_token=access_token,
+        refresh_token=refresh_token,
         token_type="bearer"
     )
 
@@ -174,7 +185,7 @@ def login(request: schemas.LoginRequest, db: Session = Depends(get_db)):
     이메일과 비밀번호로 로그인합니다.
     - 이메일로 사용자를 찾습니다.
     - 비밀번호를 검증합니다.
-    - 로그인 성공 시 액세스 토큰을 발급합니다.
+    - 로그인 성공 시 액세스 토큰과 리프레시 토큰을 발급합니다.
     - 마지막 로그인 시간을 업데이트합니다.
     """
     # 이메일로 사용자 찾기
@@ -201,9 +212,102 @@ def login(request: schemas.LoginRequest, db: Session = Depends(get_db)):
         email=user.email
     )
     
+    # 리프레시 토큰 생성 및 저장
+    refresh_token = create_refresh_token()
+    refresh_token_hash = hash_refresh_token(refresh_token)
+    expires_at = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    
+    crud.create_refresh_token(
+        db=db,
+        user_id=user.user_id,
+        token_hash=refresh_token_hash,
+        expires_at=expires_at
+    )
+    
     return schemas.LoginResponse(
         user=user,
         access_token=access_token,
+        refresh_token=refresh_token,
         token_type="bearer",
         message="로그인 성공"
     )
+
+@router.post("/refresh", response_model=schemas.RefreshTokenResponse)
+def refresh_access_token(request: schemas.RefreshTokenRequest, db: Session = Depends(get_db)):
+    """
+    리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급합니다.
+    - 리프레시 토큰을 검증합니다.
+    - 새로운 액세스 토큰과 리프레시 토큰을 발급합니다.
+    - 기존 리프레시 토큰을 무효화합니다.
+    """
+    # 리프레시 토큰 검증
+    refresh_token_hash = hash_refresh_token(request.refresh_token)
+    db_refresh_token = crud.get_refresh_token(db, token_hash=refresh_token_hash)
+    
+    if not db_refresh_token:
+        raise HTTPException(
+            status_code=401,
+            detail="유효하지 않은 리프레시 토큰입니다"
+        )
+    
+    # 사용자 정보 조회
+    user = crud.get_user(db, user_id=db_refresh_token.user_id)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="사용자를 찾을 수 없습니다"
+        )
+    
+    # 기존 리프레시 토큰 무효화
+    crud.revoke_refresh_token(db, token_hash=refresh_token_hash)
+    
+    # 새로운 액세스 토큰 생성
+    access_token = create_access_token(
+        user_id=user.user_id,
+        email=user.email
+    )
+    
+    # 새로운 리프레시 토큰 생성 및 저장
+    new_refresh_token = create_refresh_token()
+    new_refresh_token_hash = hash_refresh_token(new_refresh_token)
+    expires_at = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    
+    crud.create_refresh_token(
+        db=db,
+        user_id=user.user_id,
+        token_hash=new_refresh_token_hash,
+        expires_at=expires_at
+    )
+    
+    return schemas.RefreshTokenResponse(
+        access_token=access_token,
+        refresh_token=new_refresh_token,
+        token_type="bearer"
+    )
+
+@router.post("/logout")
+def logout(request: schemas.RefreshTokenRequest, db: Session = Depends(get_db)):
+    """
+    로그아웃합니다.
+    - 리프레시 토큰을 무효화합니다.
+    """
+    # 리프레시 토큰 검증
+    refresh_token_hash = hash_refresh_token(request.refresh_token)
+    db_refresh_token = crud.get_refresh_token(db, token_hash=refresh_token_hash)
+    
+    if db_refresh_token:
+        # 리프레시 토큰 무효화
+        crud.revoke_refresh_token(db, token_hash=refresh_token_hash)
+    
+    return {"message": "로그아웃되었습니다"}
+
+@router.post("/logout-all")
+def logout_all(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    모든 디바이스에서 로그아웃합니다.
+    - 사용자의 모든 리프레시 토큰을 무효화합니다.
+    """
+    # 사용자의 모든 리프레시 토큰 무효화
+    revoked_count = crud.revoke_all_user_refresh_tokens(db, user_id=current_user.user_id)
+    
+    return {"message": f"{revoked_count}개의 세션이 로그아웃되었습니다"}

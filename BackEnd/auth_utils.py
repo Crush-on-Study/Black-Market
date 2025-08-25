@@ -74,3 +74,23 @@ def verify_access_token(token: str) -> Dict:
         raise HTTPException(status_code=401, detail="토큰이 만료되었습니다. 리프레시 토큰을 사용해주세요")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="유효하지 않은 토큰입니다")
+
+def verify_refresh_token(token: str) -> str:
+    """리프레시 토큰 검증 (해시화된 토큰 반환)"""
+    if not token:
+        raise HTTPException(status_code=401, detail="리프레시 토큰이 필요합니다")
+    
+    # 토큰을 해시화하여 반환 (DB에서 검색할 때 사용)
+    return hash_refresh_token(token)
+
+def get_current_user_from_token(token: str) -> Dict:
+    """토큰에서 현재 사용자 정보 추출 (의존성 주입용)"""
+    try:
+        payload = verify_access_token(token)
+        return payload
+    except HTTPException:
+        raise HTTPException(
+            status_code=401,
+            detail="유효하지 않은 인증 정보입니다",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
