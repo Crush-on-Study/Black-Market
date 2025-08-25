@@ -247,3 +247,5 @@ cython_debug/
 uv.lock
 .uv_cache/
 uv.toml
+
+.kiro
